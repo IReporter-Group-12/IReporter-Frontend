@@ -1,25 +1,32 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { categories, types } from "../data"; // Assuming categories and types for other purposes
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useState } from "react";
-import { BiTrash } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import "../styles/PublicPetition.css";
-import "../styles/breakpoints.css";
+// Import necessary components and dependencies
+import Navbar from "../components/Navbar"; // Navbar component
+import Footer from "../components/Footer"; // Footer component
+import { categories, types } from "../data"; // Import categories and types data
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // For drag-and-drop functionality
+import { useState } from "react"; // useState hook from React
+import { BiTrash } from "react-icons/bi"; // Trash icon from react-icons
+import { useSelector } from "react-redux"; // useSelector hook from Redux
+import { useNavigate } from "react-router-dom"; // useNavigate from react-router-dom for navigation
+import "../styles/PublicPetition.css"; // CSS for styling the form
+import "../styles/breakpoints.css"; // CSS for responsive design
+import variables from "../styles/variables.css"; // CSS variables
 
-import variables from "../styles/variables.css";
-
+// Define the PublicPetitionForm component
 const PublicPetitionForm = () => {
+  // Get user data from the Redux store
   const user = useSelector((state) => state.user) || {};
+  
+  // State to store user's location
   const [userLocation, setUserLocation] = useState(null);
+
+  // State to store user data
   const [userData, setUserData] = useState({
     idPassport: user.idPassport || "",
     fullName: user.fullName || "",
     email: user.email || "",
   });
 
+  // State to store incident location data
   const [incidentLocation, setIncidentLocation] = useState({
     governmentAgency: "",
     county: "",
@@ -28,27 +35,32 @@ const PublicPetitionForm = () => {
     longitude: "",
   });
 
+  // State to store incident data
   const [incidentData, setIncidentData] = useState({
     title: "",
     description: "",
     media: [],
   });
 
+  // Handle changes to user data inputs
   const handleUserDataChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
 
+  // Handle changes to incident location inputs
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
     setIncidentLocation({ ...incidentLocation, [name]: value });
   };
 
+  // Handle changes to incident data inputs
   const handleIncidentDataChange = (e) => {
     const { name, value } = e.target;
     setIncidentData({ ...incidentData, [name]: value });
   };
 
+  // Handle media file uploads
   const handleMediaUpload = (e) => {
     const newMedia = e.target.files;
     setIncidentData((prevData) => ({
@@ -57,6 +69,7 @@ const PublicPetitionForm = () => {
     }));
   };
 
+  // Handle reordering of media items via drag-and-drop
   const handleMediaDrag = (result) => {
     if (!result.destination) return;
 
@@ -67,6 +80,7 @@ const PublicPetitionForm = () => {
     setIncidentData({ ...incidentData, media: items });
   };
 
+  // Handle removal of media items
   const handleMediaRemove = (indexToRemove) => {
     setIncidentData((prevData) => ({
       ...prevData,
@@ -74,12 +88,15 @@ const PublicPetitionForm = () => {
     }));
   };
 
+  // useNavigate hook for navigation
   const navigate = useNavigate();
 
+  // Handle form submission
   const handlePost = async (e) => {
     e.preventDefault();
 
     try {
+      // Create a FormData object to submit the form data
       const reportForm = new FormData();
       reportForm.append("idPassport", userData.idPassport);
       reportForm.append("fullName", userData.fullName);
@@ -92,15 +109,18 @@ const PublicPetitionForm = () => {
       reportForm.append("title", incidentData.title);
       reportForm.append("description", incidentData.description);
 
+      // Append media files to the form data
       incidentData.media.forEach((media) => {
         reportForm.append("media", media);
       });
 
+      // Send the form data to the server
       const response = await fetch("http://localhost:3001/reports/create", {
         method: "POST",
         body: reportForm,
       });
 
+      // Navigate to the home page if the response is successful
       if (response.ok) {
         navigate("/");
       }
@@ -109,38 +129,27 @@ const PublicPetitionForm = () => {
     }
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(incidentData.media);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setIncidentData({ ...incidentData, media: items });
+  // Function to get the user's current location
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ latitude, longitude });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
   };
 
-  
-  
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setUserLocation({ latitude, longitude });
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
-  
-
+  // Render the form
   return (
     <>
-      <Navbar />
+      <Navbar /> {/* Navbar component */}
       <div className="create-report">
         <h1>Intervention Report</h1>
         <form onSubmit={handlePost}>
@@ -179,7 +188,7 @@ const PublicPetitionForm = () => {
             <h2>Step 2: Location Data</h2>
             <hr />
             <div className="location-data">
-              <p>Which government agency does the petition you wish to submit pertainto?</p>
+              <p>Which government agency does the petition you wish to submit pertain to?</p>
               <select
                 name="governmentAgency"
                 value={incidentLocation.governmentAgency}
@@ -310,7 +319,7 @@ const PublicPetitionForm = () => {
           <button type="submit">Submit Report</button>
         </form>
       </div>
-      <Footer />
+      <Footer /> {/* Footer component */}
     </>
   );
 };

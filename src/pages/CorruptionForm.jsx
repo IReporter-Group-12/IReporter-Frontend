@@ -1,3 +1,4 @@
+// Importing necessary components, hooks, and libraries
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { categories, types } from "../data"; // Assuming categories and types for other purposes
@@ -8,17 +9,21 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/CorruptionForm.css";
 import "../styles/breakpoints.css";
-
 import variables from "../styles/variables.css";
+
 const CorruptionForm = () => {
+  // Get user data from the Redux store or initialize as an empty object
   const user = useSelector((state) => state.user) || {};
+  // State to store user location
   const [userLocation, setUserLocation] = useState(null);
+  // State to store user-provided data
   const [userData, setUserData] = useState({
     idPassport: user.idPassport || "",
     fullName: user.fullName || "",
     email: user.email || "",
   });
 
+  // State to store location details of the incident
   const [incidentLocation, setIncidentLocation] = useState({
     governmentAgency: "",
     county: "",
@@ -27,27 +32,32 @@ const CorruptionForm = () => {
     longitude: "",
   });
 
+  // State to store incident details
   const [incidentData, setIncidentData] = useState({
     title: "",
     description: "",
     media: [],
   });
 
+  // Handle changes in user data inputs
   const handleUserDataChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
 
+  // Handle changes in incident location inputs
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
     setIncidentLocation({ ...incidentLocation, [name]: value });
   };
 
+  // Handle changes in incident data inputs
   const handleIncidentDataChange = (e) => {
     const { name, value } = e.target;
     setIncidentData({ ...incidentData, [name]: value });
   };
 
+  // Handle media file uploads
   const handleMediaUpload = (e) => {
     const newMedia = e.target.files;
     setIncidentData((prevData) => ({
@@ -56,6 +66,7 @@ const CorruptionForm = () => {
     }));
   };
 
+  // Handle drag and drop of media files
   const handleMediaDrag = (result) => {
     if (!result.destination) return;
 
@@ -66,6 +77,7 @@ const CorruptionForm = () => {
     setIncidentData({ ...incidentData, media: items });
   };
 
+  // Handle removal of media files
   const handleMediaRemove = (indexToRemove) => {
     setIncidentData((prevData) => ({
       ...prevData,
@@ -73,13 +85,16 @@ const CorruptionForm = () => {
     }));
   };
 
+  // Hook for navigation
   const navigate = useNavigate();
 
+  // Handle form submission to post the report
   const handlePost = async (e) => {
     e.preventDefault();
 
     try {
       const reportForm = new FormData();
+      // Append user and incident data to the FormData object
       reportForm.append("idPassport", userData.idPassport);
       reportForm.append("fullName", userData.fullName);
       reportForm.append("email", userData.email);
@@ -91,16 +106,19 @@ const CorruptionForm = () => {
       reportForm.append("title", incidentData.title);
       reportForm.append("description", incidentData.description);
 
+      // Append media files to the FormData object
       incidentData.media.forEach((media) => {
         reportForm.append("media", media);
       });
 
+      // Send a POST request to create a new report
       const response = await fetch("http://localhost:3001/reports/create", {
         method: "POST",
         body: reportForm,
       });
 
       if (response.ok) {
+        // Navigate to the home page upon successful submission
         navigate("/");
       }
     } catch (err) {
@@ -108,6 +126,7 @@ const CorruptionForm = () => {
     }
   };
 
+  // Handle drag end event for media files
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -118,24 +137,22 @@ const CorruptionForm = () => {
     setIncidentData({ ...incidentData, media: items });
   };
 
-  
-  
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setUserLocation({ latitude, longitude });
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
-  
+  // Function to get user's current location
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ latitude, longitude });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
 
   return (
     <>
@@ -143,6 +160,7 @@ const CorruptionForm = () => {
       <div className="create-report">
         <h1>Report an Incident</h1>
         <form onSubmit={handlePost}>
+          {/* Step 1: User Data */}
           <div className="create-report_step1">
             <h2>Step 1: User Data</h2>
             <hr />
@@ -174,6 +192,7 @@ const CorruptionForm = () => {
             </div>
           </div>
 
+          {/* Step 2: Location Data */}
           <div className="create-report_step2">
             <h2>Step 2: Location Data</h2>
             <hr />
@@ -225,6 +244,7 @@ const CorruptionForm = () => {
             </div>
           </div>
 
+          {/* Step 3: Incident Data */}
           <div className="create-report_step3">
             <h2>Step 3: Incident Data</h2>
             <hr />
@@ -253,6 +273,7 @@ const CorruptionForm = () => {
                 required
               />
               <div className="media-previews">
+                {/* Drag and Drop context for media files */}
                 <DragDropContext onDragEnd={handleMediaDrag}>
                   <Droppable droppableId="media" direction="vertical">
                     {(provided) => (
@@ -274,6 +295,7 @@ const CorruptionForm = () => {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
+                                {/* Display media preview */}
                                 {file.type.startsWith("image/") ? (
                                   <img
                                     src={URL.createObjectURL(file)}

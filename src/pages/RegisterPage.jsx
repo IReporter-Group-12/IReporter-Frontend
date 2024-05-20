@@ -1,58 +1,70 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/List.css";
-import "../styles/Register.css";
+// Import necessary hooks and styles
+import { useEffect, useState } from "react"; // useEffect and useState hooks from React
+import { useNavigate } from "react-router-dom"; // useNavigate from react-router-dom for navigation
+import "../styles/List.css"; // CSS for styling
+import "../styles/Register.css"; // CSS for styling
 
+// RegisterPage component
 const RegisterPage = () => {
+  // State to manage form data
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    profileImage: null,
+    profileImage: null, // Profile image file
   });
 
+  // Handle input changes
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files } = e.target; // Get name, value, and files from the event target
     setFormData({
       ...formData,
-      [name]: name === "profileImage" ? files[0] : value,
+      [name]: name === "profileImage" ? files[0] : value, // If the input is for profileImage, set it as the file, otherwise set the value
     });
   };
 
+  // State to manage password match validation
   const [passwordMatch, setPasswordMatch] = useState(true);
 
+  // Effect to check password match whenever password or confirmPassword changes
   useEffect(() => {
-    // Check password match when either password or confirmPassword changes
     setPasswordMatch(formData.password === formData.confirmPassword || formData.confirmPassword === "");
-  }, [formData.password, formData.confirmPassword]); // Update useEffect dependency array
+  }, [formData.password, formData.confirmPassword]);
 
+  // useNavigate hook for navigation
   const navigate = useNavigate();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      // Create FormData object to send the form data
       const register_form = new FormData();
 
+      // Append each form field to the FormData object
       for (var key in formData) {
         register_form.append(key, formData[key]);
       }
 
+      // Send a POST request to the server with the form data
       const response = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         body: register_form,
       });
 
+      // If the response is successful, navigate to the login page
       if (response.ok) {
         navigate("/login");
       }
     } catch (err) {
-      console.log("Registration failed", err.message);
+      console.log("Registration failed", err.message); // Log any error that occurs during registration
     }
   };
 
+  // Render the registration form
   return (
     <div className="register">
       <div className="register_content">
@@ -96,6 +108,7 @@ const RegisterPage = () => {
             required
           />
 
+          {/* Show a message if passwords do not match */}
           {!passwordMatch && (
             <p style={{ color: "red" }}>Passwords are not matched!</p>
           )}
@@ -110,14 +123,15 @@ const RegisterPage = () => {
             required
           />
           <label htmlFor="image">
-            <img src="/assets/addImage.png" alt="the option to upload a visual rep " />
+            <img src="/assets/addImage.png" alt="Upload option" />
             <p>Upload Your Photo</p>
           </label>
 
+          {/* Show a preview of the uploaded image */}
           {formData.profileImage && (
             <img
               src={URL.createObjectURL(formData.profileImage)}
-              alt="filling in words to remove the eslint errors "
+              alt="Profile preview"
               style={{ maxWidth: "80px" }}
             />
           )}
