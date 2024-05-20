@@ -1,0 +1,127 @@
+.create-report {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+  }
+  
+  .create-report h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #3f84b3;
+  }
+  
+  .create-report h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #3f84b3;
+  }
+  
+  .create-report hr {
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    margin-bottom: 2rem;
+  }
+  
+  .create-report input,
+  .create-report select,
+  .create-report textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  .create-report input[type="file"] {
+    padding: 0;
+  }
+  
+  .create-report .media-previews {
+    display: flex;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .create-report .media-item {
+    position: relative;
+    margin-right: 1rem;
+  }
+  
+  .create-report .media-item img,
+  .create-report .media-item video {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .create-report .media-item button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #f00;
+    cursor: pointer;
+  }
+  
+  .create-report button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background-color: #3f84b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-report button[type="submit"]:hover {
+    background-color: #2a6aa9;
+  }
+  
+  @media (max-width: 768px) {
+    .create-report {
+      padding: 1rem;
+    }
+  
+    .create-report h1 {
+      font-size: 1.8rem;
+    }
+  
+    .create-report h2 {
+      font-size: 1.3rem;
+    }
+  
+    .create-report input,
+    .create-report select,
+    .create-report textarea {
+      font-size: 0.9rem;
+    }
+  
+    .create-report button[type="submit"] {
+      font-size: 1rem;
+    }
+  }
+  .media-item {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .media-item img,
+  .media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
