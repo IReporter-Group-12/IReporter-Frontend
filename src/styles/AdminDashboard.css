@@ -1,0 +1,15 @@
+/* AdminDashboard.css */
+.dashboard-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  width: 200px;
+  height: 150px;
+  background-color: rgb(49, 240, 208); /* Change background color to blue */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  margin-right: 20px;
+}
