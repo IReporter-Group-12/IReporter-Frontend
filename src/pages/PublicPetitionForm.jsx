@@ -115,7 +115,7 @@ const PublicPetitionForm = () => {
       });
 
       // Send the form data to the server
-      const response = await fetch("http://localhost:3001/reports/create", {
+      const response = await fetch("https://ireporter-api.onrender.com/public_petitions", {
         method: "POST",
         body: reportForm,
       });
