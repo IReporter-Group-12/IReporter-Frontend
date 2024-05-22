@@ -51,13 +51,17 @@ const LoginPage = () => {
 
 		// If login is successful
 		if (res.ok) {
+
+			// setting the user id and role to local storage because redux is being an ass
+			localStorage.setItem("user_id", data.user_id);
+			localStorage.setItem("role", data.role);
+			localStorage.setItem("username", data.username)
+
+
 			// Dispatching setLogin action with user id, username and email data to the Redux store
 			dispatch(
 				setLogin({
-					user_id: data.user_id,
-					username: data.username,
-					email: data.email,
-					role: data.role,
+					data
 				})
 			);
 			// Navigating to the home page after successful login

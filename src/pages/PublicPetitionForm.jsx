@@ -317,7 +317,6 @@ const PublicPetitionForm = () => {
           <button type="submit">Submit Report</button>
         </form>
       </div>
-      <Footer /> {/* Footer component */}
     </>
   );
 };

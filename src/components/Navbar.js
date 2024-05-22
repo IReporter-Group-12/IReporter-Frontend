@@ -20,7 +20,8 @@ const Navbar = () => {
   
   // Accessing user data from the Redux store
   const user = useSelector((state) => state.user);
-  
+
+
   // Dispatch function to send actions to the Redux store
   const dispatch = useDispatch();
   

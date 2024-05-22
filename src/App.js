@@ -9,7 +9,6 @@ import CorruptionForm from "./pages/CorruptionForm";
 import Footer from "./components/Footer.js";
 import Navbar from "./components/Navbar";
 
-import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import Categories from "./components/Categories";
 import UserDashboard from "./pages/UserDashboard.jsx";
@@ -29,9 +28,8 @@ function App() {
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/create-listing-corruption" element={<CorruptionForm />} />
-          <Route path="/properties/search/:search" element={<SearchPage />} />
-          <Route path="/properties/category/:category" element={<CategoryPage />} />
           <Route path="/create-listing-petition" element={<PublicPetitionForm />} />
+          <Route path="/properties/search/:search" element={<SearchPage />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/corruption-form" element={<CorruptionForm />} />  
           <Route path="/public-petition" element={<PublicPetitionForm />} /> 

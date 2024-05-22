@@ -330,7 +330,6 @@ const CorruptionForm = () => {
           <button type="submit">Submit Report</button>
         </form>
       </div>
-      <Footer />
     </>
   );
 };

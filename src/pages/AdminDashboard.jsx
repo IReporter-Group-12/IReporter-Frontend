@@ -52,7 +52,7 @@ export default function UserDashboard() {
     <>
         <Slide />
 
-        <h2 className="section-header">Corruption Reports</h2>
+        <h2 className="section-header">All Corruption Reports</h2>
         <div className="card-container">
             {corruptionReports.map((report, index) => (
                 <div className="card" key={index}>
@@ -65,14 +65,15 @@ export default function UserDashboard() {
                         }`}> {report.status} </small>
                         <h3 className="card-title">{report.title}</h3>
                         <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                        <p className="card-id">ID: {report.id}</p>
                         <p className="card-description">{report.description}</p>
-                        <button className="card-button">Edit</button>
+                        <button className="card-button">Review Report</button>
                     </div>
                 </div>
             ))}
         </div>
 
-        <h2 className="section-header">Public Petitions</h2>
+        <h2 className="section-header">All Public Petitions</h2>
         <div className="card-container">
             {publicPetitions.map((report, index) => (
                 <div className="card" key={index}>
@@ -85,8 +86,9 @@ export default function UserDashboard() {
                         }`}> {report.status} </small>
                         <h3 className="card-title">{report.title}</h3>
                         <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                        <p className="card-id">ID: {report.id}</p>
                         <p className="card-description">{report.description}</p>
-                        <button className="card-button">Edit</button>
+                        <button className="card-button">Review Report</button>
                     </div>
                 </div>
             ))}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Slide from "../components/Slide";
+import Categories from "../components/Categories";
 import "../styles/Dashboard.css"
 
 
@@ -8,12 +10,20 @@ export default function UserDashboard() {
     const [corruptionReports, setCorruptionReports] = useState([])
     const [publicPetitions, setPublicPetitions] = useState([])
 
+    // const user = useSelector((state) => state.user)
+    const user_id = localStorage.getItem("user_id")
+    const role = localStorage.getItem("role");
+    const username = localStorage.getItem("username")
+
+    console.log('Corruption Reports: ', corruptionReports)
+    console.log('Public Petitions: ', publicPetitions)
+
     useEffect(
 		() =>
 			async function () {
 				try {
 					const res = await fetch(
-						"http://127.0.0.1:5000/corruption_reports",
+						`http://127.0.0.1:5000/corruption_reports/${user_id}/`,
 						{
 							method: "GET",
 						}
@@ -25,7 +35,7 @@ export default function UserDashboard() {
 					console.error(`Error: ${err.message}`);
 				}
 			},
-		[]
+		[user_id]
 	);
 
         useEffect(
@@ -33,7 +43,7 @@ export default function UserDashboard() {
 				async function () {
 					try {
 						const res = await fetch(
-							"http://127.0.0.1:5000/public_petitions",
+							`http://127.0.0.1:5000/public_petitions/${user_id}/`,
 							{
 								method: "GET",
 							}
@@ -45,14 +55,15 @@ export default function UserDashboard() {
 						console.error(`Error: ${err.message}`);
 					}
 				},
-			[]
+			[user_id]
 		);
 
   return (
     <>
         <Slide />
+        <Categories />
 
-        <h2 className="section-header">Corruption Reports</h2>
+        <h2 className="section-header">Your Corruption Reports</h2>
         <div className="card-container">
             {corruptionReports.map((report, index) => (
                 <div className="card" key={index}>
@@ -65,14 +76,15 @@ export default function UserDashboard() {
                         }`}> {report.status} </small>
                         <h3 className="card-title">{report.title}</h3>
                         <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                        <p className="card-id">ID: {report.id}</p>
                         <p className="card-description">{report.description}</p>
-                        <button className="card-button">Edit</button>
+                        <button className="card-button">Edit Report</button>
                     </div>
                 </div>
             ))}
         </div>
 
-        <h2 className="section-header">Public Petitions</h2>
+        <h2 className="section-header">Your Public Petitions</h2>
         <div className="card-container">
             {publicPetitions.map((report, index) => (
                 <div className="card" key={index}>
@@ -85,8 +97,9 @@ export default function UserDashboard() {
                         }`}> {report.status} </small>
                         <h3 className="card-title">{report.title}</h3>
                         <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                        <p className="card-id">ID: {report.id}</p>
                         <p className="card-description">{report.description}</p>
-                        <button className="card-button">Edit</button>
+                        <button className="card-button">Edit Report</button>
                     </div>
                 </div>
             ))}
