@@ -21,37 +21,47 @@ const Categories = () => {
   };
 
   return (
-    <div className="categories">
-      <h1>Report Government Agencies and Ministries</h1>
-      <p>
-        Each ministry is typically responsible for a specific sector, such as health, education, or defense, ensuring that policies are effectively designed and executed. Agencies often operate under the umbrella of these ministries, focusing on specialized tasks like regulatory enforcement, data collection, and service delivery.
-      </p>
+		<div className="categories">
+			<h1>Report Government Agencies and Ministries</h1>
+			<p>
+				Each ministry is typically responsible for a specific sector,
+				such as health, education, or defense, ensuring that policies
+				are effectively designed and executed. Agencies often operate
+				under the umbrella of these ministries, focusing on specialized
+				tasks like regulatory enforcement, data collection, and service
+				delivery.
+			</p>
 
-      <div className="categories_list">
-        {/* Map through a subset of categories and display each one */}
-        {categories?.slice(1, 7).map((category, index) => (
-          // Link component for each category leading to a specific path
-          <Link to={`/properties/category/${category.label}`} key={index}>
-            <div className="category">
-              {/* Conditionally render the category image if it exists */}
-              {category.img && <img src={category.img} alt={category.label} />}
-              <div className="overlay"></div>
-              <div className="category_text">
-                {/* Div for icon click handling, triggering the handleIconClick function */}
-                <div
-                  className="category_text_icon"
-                  onClick={(e) => handleIconClick(e, category.label)}
-                >
-                  {category.icon}
-                </div>
-                {/* Display the category label */}
-                <p>{category.label}</p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
+			<div className="categories_list">
+				{/* Map through a subset of categories and display each one */}
+				{categories?.slice(1, 7).map((category, index) => (
+					// Link component for each category leading to a specific path
+					<Link
+						to={`/properties/category/${category.label}`}
+						key={index}>
+						<div className="category">
+							{/* Conditionally render the category image if it exists */}
+							{category.img && (
+								<img src={category.img} alt={category.label} />
+							)}
+							<div className="overlay"></div>
+							<div className="category_text">
+								{/* Div for icon click handling, triggering the handleIconClick function */}
+								<div
+									className="category_text_icon"
+									onClick={(e) =>
+										handleIconClick(e, category.label)
+									}>
+									{category.icon}
+								</div>
+								{/* Display the category label */}
+								<p>{category.label}</p>
+							</div>
+						</div>
+					</Link>
+				))}
+			</div>
+		</div>
   );
 };
 

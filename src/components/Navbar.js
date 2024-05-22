@@ -32,72 +32,82 @@ const Navbar = () => {
 
 
   return (
-    <div className="navbar">
-      {/* Logo linking to the homepage */}
-      <a href="/">
-        <img src="/assets/logo.png" alt="representation of the company or the government" />
-      </a>
-      
-      {/* Search bar section */}
-      <div className="navbar_search">
-        <input
-          type="text"
-          placeholder="Search ..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <IconButton disabled={search === ""}>
-          <Search
-            sx={{ color: variables.pinkred }}
-            onClick={() => { navigate(`/properties/search/${search}`); }}
-          />
-        </IconButton>
-      </div>
+		<div className="navbar">
+			{/* Logo linking to the homepage */}
+			<a href="/">
+				<img
+					src="/assets/logo.png"
+					alt="representation of the company or the government"
+				/>
+			</a>
 
-      {/* Right section of the navbar */}
-      <div className="navbar_right">
+			<Link to="/user-dashboard">User Dashboard</Link>
+			<Link to="/admin-dashboard">Admin Dashboard</Link>
 
-        <button
-          className="navbar_right_account"
-          onClick={() => setDropdownMenu(!dropdownMenu)}
-        >
-          <Menu sx={{ color: variables.darkgrey }} />
-          {/* Display user icon or profile image based on authentication */}
-          {!user ? (
-            <Person sx={{ color: variables.darkgrey }} />
-          ) : (
-            <img
-              src={`http://localhost:3001/${user.profileImagePath.replace(
-                "public",
-                ""
-              )}`}
-              alt="User's profile"
-              style={{ objectFit: "cover", borderRadius: "50%" }}
-            />
-          )}
-        </button>
+			{/* Search bar section */}
+			<div className="navbar_search">
+				<input
+					type="text"
+					placeholder="Search ..."
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+				/>
+				<IconButton disabled={search === ""}>
+					<Search
+						sx={{ color: variables.pinkred }}
+						onClick={() => {
+							navigate(`/properties/search/${search}`);
+						}}
+					/>
+				</IconButton>
+			</div>
 
-        {/* Dropdown menu for unauthenticated users */}
-        {dropdownMenu && !user && (
-          <div className="navbar_right_accountmenu">
-            <Link to="/login">Log In</Link>
-            <Link to="/user-register">Sign Up</Link>
-            <Link to="/admin-register">Government Admin</Link>
-          </div>
-        )}
+			{/* Right section of the navbar */}
+			<div className="navbar_right">
+				<button
+					className="navbar_right_account"
+					onClick={() => setDropdownMenu(!dropdownMenu)}>
+					<Menu sx={{ color: variables.darkgrey }} />
+					{/* Display user icon or profile image based on authentication */}
+					{!user ? (
+						<Person sx={{ color: variables.darkgrey }} />
+					) : (
+						<img
+							src={`http://localhost:3001/${user.profileImagePath.replace(
+								"public",
+								""
+							)}`}
+							alt="User's profile"
+							style={{ objectFit: "cover", borderRadius: "50%" }}
+						/>
+					)}
+				</button>
 
-        {/* Dropdown menu for authenticated users */}
-        {dropdownMenu && user && (
-          <div className="navbar_right_accountmenu">
-            <Link to="/profile">Profile</Link>
-            <Link to="/create-listing">Government Admin</Link>
-            <Link to="/login" onClick={() => {
-              dispatch(setLogout());
-            }} >Log Out</Link>
-          </div>
-        )}
-      </div>
-    </div>
+				{/* Dropdown menu for unauthenticated users */}
+				{dropdownMenu && !user && (
+					<div className="navbar_right_accountmenu">
+						<Link to="/login">Log In</Link>
+						<Link to="/user-register">Sign Up</Link>
+						<Link to="/admin-register">Government Admin</Link>
+					</div>
+				)}
+
+				{/* Dropdown menu for authenticated users */}
+				{dropdownMenu && user && (
+					<div className="navbar_right_accountmenu">
+						<Link to="/profile">Profile</Link>
+						<Link to="/create-listing">Government Admin</Link>
+						<Link
+							to="/login"
+							onClick={() => {
+								dispatch(setLogout());
+							}}>
+							Log Out
+						</Link>
+					</div>
+				)}
+			</div>
+		</div>
   );
 };
 
