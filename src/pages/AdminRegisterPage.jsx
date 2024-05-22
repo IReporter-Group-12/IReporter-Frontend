@@ -46,7 +46,7 @@ const AdminRegisterPage = () => {
 		try {
 			// Send a POST request to the server with the form data
 			const res = await fetch(
-				"https://ireporter-api.onrender.com/admin/register",
+				"http://127.0.0.1:5000/admin/register",
 				{
 					method: "POST",
 					headers: {
