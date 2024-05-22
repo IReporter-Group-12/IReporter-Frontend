@@ -13,12 +13,14 @@ export const userSlice = createSlice({
     setLogin: (state, action) => {
       state.user_id = action.payload.user_id;
 			state.username = action.payload.username;
-			state.email = action.payload.email;
+      state.email = action.payload.email;
+			state.role = action.payload.role;
     },
     setLogout: (state) => {
     state.user_id = null;
 		state.username = null;
-		state.email = null;
+    state.email = null;
+		state.role = null;
     },
     setListings: (state, action) => {
       state.listings = action.payload.listings

@@ -4,6 +4,7 @@ import "../styles/Login.css"; // Importing CSS for styling
 import { setLogin } from "../redux/state"; // Importing setLogin action from redux state
 import { useDispatch } from "react-redux"; // Importing useDispatch hook from redux
 import { useNavigate } from "react-router-dom"; // Importing useNavigate from react-router-dom for navigation
+import Navbar from "../components/Navbar";
 
 const LoginPage = () => {
   // State variable to hold email and password input values
@@ -11,9 +12,6 @@ const LoginPage = () => {
     'email' : '',
     'password' : ''
   })
-
-  // state variable to store the response from the server
-  const [response, setResponse] = useState(null)
 
   // Dispatch function to dispatch actions to the Redux store
   const dispatch = useDispatch();
@@ -50,7 +48,6 @@ const LoginPage = () => {
       })
       
       const data = await res.json()
-      setResponse(data)
 
       // If login is successful
       if (res.ok) {
@@ -60,6 +57,7 @@ const LoginPage = () => {
             user_id: data.user_id,
             username: data.username,
             email: data.email,
+            role: data.role
           })
         );
         // Navigating to the home page after successful login
@@ -85,6 +83,7 @@ const LoginPage = () => {
 					<input
 						type="email"
 						name="email"
+            value={formData.email}
 						placeholder="Email"
 						onChange={handleChange} // Updating email state on change
 						required
@@ -93,6 +92,7 @@ const LoginPage = () => {
 					<input
 						type="password"
 						name="password"
+            value={formData.password}
 						placeholder="Password"
 						onChange={handleChange} // Updating password state on change
 						required
