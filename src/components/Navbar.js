@@ -55,7 +55,7 @@ const Navbar = () => {
       {/* Right section of the navbar */}
       <div className="navbar_right">
         {/* Link for government admin, changes based on user authentication */}
-        {user ? (
+        {/* {user ? (
           <a href="/create-listing" className="host">
             Government Admin
           </a>
@@ -63,7 +63,7 @@ const Navbar = () => {
           <a href="/login" className="host">
             Government Admin
           </a>
-        )}
+        )} */}
 
         {/* Button to toggle the dropdown menu */}
         <button
@@ -90,7 +90,8 @@ const Navbar = () => {
         {dropdownMenu && !user && (
           <div className="navbar_right_accountmenu">
             <Link to="/login">Log In</Link>
-            <Link to="/register">Sign Up</Link>
+            <Link to="/user-register">Sign Up</Link>
+            <Link to="/admin-register">Government Admin</Link>
           </div>
         )}
 
@@ -99,14 +100,9 @@ const Navbar = () => {
           <div className="navbar_right_accountmenu">
             <Link to="/profile">Profile</Link>
             <Link to="/create-listing">Government Admin</Link>
-            <Link
-              to="/login"
-              onClick={() => {
-                dispatch(setLogout());
-              }}
-            >
-              Log Out
-            </Link>
+            <Link to="/login" onClick={() => {
+              dispatch(setLogout());
+            }} >Log Out</Link>
           </div>
         )}
       </div>
