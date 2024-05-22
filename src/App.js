@@ -26,8 +26,8 @@ function App() {
           <Route path="/create-listing-corruption" element={<CorruptionForm />} />
           <Route path="/create-listing-petition" element={<PublicPetitionForm />} />
           <Route path="/categories" element={<Categories />} />
-          {/* <Route path="/corruption-form" element={<CorruptionForm />} />  
-          <Route path="/public-petition" element={<PublicPetitionForm />} />  */}
+          <Route path="/corruption-form" element={<CorruptionForm />} />  
+          <Route path="/public-petition" element={<PublicPetitionForm />} /> 
           <Route path="/properties/category/:category" element={<CategoryPage />} />
           <Route path="/properties/search/:search" element={<SearchPage />} />
          

@@ -42,14 +42,18 @@ const UserRegisterPage = () => {
 
     try {
 		// Send a POST request to the server with the form data
-		const res = await fetch("http://127.0.0.1:5000/user/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
+		const res = await fetch(
+			"https://ireporter-api.onrender.com/user/register",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			}
+		);
 
+		// assign the response data returned by the server to this variable
 		const data = await res.json();
 
 		// If the response is successful, navigate to the login page

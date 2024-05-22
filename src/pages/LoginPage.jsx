@@ -4,7 +4,6 @@ import "../styles/Login.css"; // Importing CSS for styling
 import { setLogin } from "../redux/state"; // Importing setLogin action from redux state
 import { useDispatch } from "react-redux"; // Importing useDispatch hook from redux
 import { useNavigate } from "react-router-dom"; // Importing useNavigate from react-router-dom for navigation
-import Navbar from "../components/Navbar";
 
 const LoginPage = () => {
   // State variable to hold email and password input values
@@ -38,37 +37,36 @@ const LoginPage = () => {
     e.preventDefault(); // Prevent default form submission behavior
     
     try {
-      // Sending a POST request to the login endpoint with email and password
-      const res = await fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Setting content type to JSON
-        },
-        body: JSON.stringify(formData), // Stringifying email and password to JSON format
-      })
-      
-      const data = await res.json()
+		// Sending a POST request to the login endpoint with email and password
+		const res = await fetch("https://ireporter-api.onrender.com/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json", // Setting content type to JSON
+			},
+			body: JSON.stringify(formData), // Stringifying email and password to JSON format
+		});
 
-      // If login is successful
-      if (res.ok) {
-        // Dispatching setLogin action with user id, username and email data to the Redux store
-        dispatch(
-          setLogin({
-            user_id: data.user_id,
-            username: data.username,
-            email: data.email,
-            role: data.role
-          })
-        );
-        // Navigating to the home page after successful login
-        alert('Login Successful!')
-        navigate("/");
-      }
-      else {
-        alert(`Login failed: ${data.error || "Unknown error"}`)
-      }
+		// assign the response data returned by the server to this variable
+		const data = await res.json();
 
-    } catch (err) {
+		// If login is successful
+		if (res.ok) {
+			// Dispatching setLogin action with user id, username and email data to the Redux store
+			dispatch(
+				setLogin({
+					user_id: data.user_id,
+					username: data.username,
+					email: data.email,
+					role: data.role,
+				})
+			);
+			// Navigating to the home page after successful login
+			alert("Login Successful!");
+			navigate("/");
+		} else {
+			alert(`Login failed: ${data.error || "Unknown error"}`);
+		}
+	} catch (err) {
       // Logging error message in case of failure
       console.error(`Error: ${err.message}`);
     }

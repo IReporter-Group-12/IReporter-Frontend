@@ -4,6 +4,7 @@ import { Search, Person, Menu } from "@mui/icons-material";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+// import { setLogin } from "../redux/state";
 
 // Importing CSS styles and variables for the Navbar component
 import "../styles/Navbar.css";
@@ -28,6 +29,7 @@ const Navbar = () => {
   
   // Hook to programmatically navigate the user
   const navigate = useNavigate();
+
 
   return (
     <div className="navbar">
@@ -54,18 +56,7 @@ const Navbar = () => {
 
       {/* Right section of the navbar */}
       <div className="navbar_right">
-        {/* Link for government admin, changes based on user authentication */}
-        {/* {user ? (
-          <a href="/create-listing" className="host">
-            Government Admin
-          </a>
-        ) : (
-          <a href="/login" className="host">
-            Government Admin
-          </a>
-        )} */}
 
-        {/* Button to toggle the dropdown menu */}
         <button
           className="navbar_right_account"
           onClick={() => setDropdownMenu(!dropdownMenu)}
