@@ -18,7 +18,7 @@ const CorruptionForm = () => {
   const [userLocation, setUserLocation] = useState(null);
   // State to store user-provided data
   const [userData, setUserData] = useState({
-    idPassport: user.idPassport || "",
+    user_id: user.user_id || "",
     fullName: user.fullName || "",
     email: user.email || "",
   });
@@ -44,7 +44,7 @@ const CorruptionForm = () => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-
+ 
   // Handle changes in incident location inputs
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
@@ -88,43 +88,150 @@ const CorruptionForm = () => {
   // Hook for navigation
   const navigate = useNavigate();
 
-  // Handle form submission to post the report
-  const handlePost = async (e) => {
-    e.preventDefault();
+//   const handlePost = async (e) => {
+//     e.preventDefault();
 
-    try {
-      const reportForm = new FormData();
-      // Append user and incident data to the FormData object
-      reportForm.append("idPassport", userData.idPassport);
-      reportForm.append("fullName", userData.fullName);
-      reportForm.append("email", userData.email);
-      reportForm.append("governmentAgency", incidentLocation.governmentAgency);
-      reportForm.append("county", incidentLocation.county);
-      reportForm.append("additionalInfo", incidentLocation.additionalInfo);
-      reportForm.append("latitude", incidentLocation.latitude);
-      reportForm.append("longitude", incidentLocation.longitude);
-      reportForm.append("title", incidentData.title);
-      reportForm.append("description", incidentData.description);
+//     try {
+//         console.log("Incident Location:", incidentLocation); // Log incident location
 
-      // Append media files to the FormData object
-      incidentData.media.forEach((media) => {
-        reportForm.append("media", media);
-      });
+//         // Ensure userData and userData.id exist
+//         if (!userData || !userData.id) {
+//             console.error("Missing user ID");
+//             return;
+//         }
 
-      // Send a POST request to create a new report
-      const response = await fetch("http://localhost:3001/reports/create", {
+//         // Collect the necessary data
+//         const data = {
+//             govt_agency: incidentLocation.governmentAgency || "Unknown Agency", // Provide a fallback value
+//             county: incidentLocation.county,
+//             title: incidentData.title,
+//             description: incidentData.description,
+//             user_id: userData.id,  // Use user_id to match backend model
+//             latitude: incidentLocation.latitude ? parseFloat(incidentLocation.latitude) : 0.0, // Ensure latitude is a float
+//             longitude: incidentLocation.longitude ? parseFloat(incidentLocation.longitude) : 0.0, // Ensure longitude is a float
+//             media: [], // Placeholder for media URLs
+//         };
+
+//         console.log("Data to be sent:", data); // Log data to be sent
+
+//         // Upload each media file and collect the URLs
+//         const mediaUrls = await Promise.all(incidentData.media.map(async (media) => {
+//             const mediaForm = new FormData();
+//             mediaForm.append("file", media);
+
+//             const uploadResponse = await fetch("http://localhost:5000/upload_report", {
+//                 method: "POST",
+//                 body: mediaForm,
+//             });
+
+//             if (!uploadResponse.ok) {
+//                 throw new Error("Media upload failed");
+//             }
+
+//             const uploadResult = await uploadResponse.json();
+//             return uploadResult.url;
+//         }));
+        
+//         // Add media URLs to data object
+//         data.media = mediaUrls;
+        
+
+//         console.log("Final data to be sent:", data); // Log final data to be sent
+
+//         // Send a POST request to create a new report
+//         const response = await fetch("http://localhost:5000/corruption_reports", {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(data),
+//         });
+
+//         if (response.ok) {
+//             // Navigate to the home page upon successful submission
+//             navigate("/");
+//         } else {
+//             const errorText = await response.text();
+//             console.log("Report submission failed", errorText);
+//         }
+//     } catch (err) {
+//         console.log("Report submission failed", err.message);
+//     }
+// };
+const handlePost = async (e) => {
+  e.preventDefault();
+
+  try {
+    console.log("Incident Location:", incidentLocation); // Log incident location
+
+    // Collect the necessary data
+    const data = {
+      govt_agency: incidentLocation.govtAgency || "Unknown Agency", // Provide a fallback value
+      county: incidentLocation.county,
+      title: incidentData.title,
+      description: incidentData.description,
+      user_id: userData.user_id,
+      latitude: incidentLocation.latitude || null,
+      longitude: incidentLocation.longitude || null,
+      media: [], // Placeholder for media URLs
+    };
+
+    console.log("Data to be sent:", data); // Log data to be sent
+
+    // Upload each media file and collect the URLs
+    const mediaUrls = await Promise.all(incidentData.media.map(async (media) => {
+      const mediaForm = new FormData();
+      mediaForm.append("file", media);
+
+      const uploadResponse = await fetch("http://localhost:5000/upload_report", {
         method: "POST",
-        body: reportForm,
+        body: mediaForm,
       });
 
-      if (response.ok) {
-        // Navigate to the home page upon successful submission
-        navigate("/");
+      if (!uploadResponse.ok) {
+        throw new Error("Media upload failed");
       }
-    } catch (err) {
-      console.log("Report submission failed", err.message);
+
+      const uploadResult = await uploadResponse.json();
+      return uploadResult.url;
+    }));
+
+    // Add media URLs to data object
+    data.media = mediaUrls;
+
+    console.log("Final data to be sent:", data); // Log final data to be sent
+
+    // Send a POST request to create a new report
+    const response = await fetch("http://localhost:5000/corruption_reports", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      // Show a success message to the user
+      alert("Report submitted successfully!");
+      // Navigate to the home page upon successful submission
+      navigate("/");
+    } else {
+      const errorText = await response.text();
+      console.log("Report submission failed", errorText);
     }
-  };
+  } catch (err) {
+    console.log("Report submission failed", err.message);
+  }
+};
+
+
+
+
+
+
+
+
+
 
   // Handle drag end event for media files
   const handleDragEnd = (result) => {
@@ -156,6 +263,7 @@ const CorruptionForm = () => {
 
   return (
     <>
+      <Navbar />
       <div className="create-report">
         <h1>Report an Incident</h1>
         <form onSubmit={handlePost}>
@@ -167,8 +275,8 @@ const CorruptionForm = () => {
               <p>ID/Passport No.</p>
               <input
                 type="text"
-                name="idPassport"
-                value={userData.idPassport}
+                name="user_id"
+                value={userData.user_id}
                 onChange={handleUserDataChange}
                 required
               />
@@ -206,8 +314,13 @@ const CorruptionForm = () => {
                 {/* Replace with dynamic options */}
                 <option value="">Select Agency</option>
                 {/* Example agencies */}
-                <option value="Agency1">Agency 1</option>
-                <option value="Agency2">Agency 2</option>
+                <option value="Agency1">KRA</option>
+                <option value="Agency2">Immigration Department</option>
+                <option value="Agency1">Kenya Police</option>
+                <option value="Agency1">Registrar of Persons</option>
+                <option value="Agency1">KWS</option>
+                <option value="Agency1">County Health Services</option>
+                <option value="Agency1">NHIF</option>
               </select>
               <p>Which county did the incident occur in?</p>
               <input
@@ -256,6 +369,12 @@ const CorruptionForm = () => {
                 onChange={handleIncidentDataChange}
                 required
               />
+
+
+
+
+
+              
               <p>Give a brief description of the incident you wish to report</p>
               <textarea
                 name="description"
