@@ -10,7 +10,7 @@ const AdminRegisterPage = () => {
 	const [formData, setFormData] = useState({
 		fullName: "",
 		email: "",
-		id_passport_no: "",
+		staff_no: "",
 		password: "",
 		confirmPassword: "",
 		profileImage: null, // Profile image file
@@ -44,6 +44,7 @@ const AdminRegisterPage = () => {
 		e.preventDefault();
 
 		try {
+			console.log(formData)
 			// Send a POST request to the server with the form data
 			const res = await fetch("http://127.0.0.1:5000/admin/register", {
 				method: "POST",
@@ -81,9 +82,10 @@ const AdminRegisterPage = () => {
 						required
 					/>
 					<input
-						placeholder="ID/Passport Number"
-						name="id_passport_no"
-						value={formData.id_passport_no}
+						placeholder="Staff Number"
+						name="staff_no"
+						value={formData.staff_no}
+						type="number"
 						onChange={handleChange}
 						required
 					/>

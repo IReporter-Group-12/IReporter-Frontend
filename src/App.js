@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/HomePage";
 import UserRegisterPage from "./pages/UserRegisterPage";
-import AdminRegisterPage from "./pages/AdminRegisterPage";
+import AdminRegisterPage from "./pages/AdminRegisterPage.jsx";
 import LoginPage from "./pages/LoginPage";
 import PublicPetitionForm from "./pages/PublicPetitionForm";
 import CorruptionForm from "./pages/CorruptionForm";
