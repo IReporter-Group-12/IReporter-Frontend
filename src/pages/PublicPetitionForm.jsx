@@ -1,5 +1,4 @@
 // Import necessary components and dependencies
-import Navbar from "../components/Navbar"; // Navbar component
 import Footer from "../components/Footer"; // Footer component
 import { categories, types } from "../data"; // Import categories and types data
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // For drag-and-drop functionality
@@ -149,7 +148,6 @@ const PublicPetitionForm = () => {
   // Render the form
   return (
     <>
-      <Navbar /> {/* Navbar component */}
       <div className="create-report">
         <h1>Intervention Report</h1>
         <form onSubmit={handlePost}>

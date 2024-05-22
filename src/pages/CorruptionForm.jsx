@@ -156,7 +156,6 @@ const CorruptionForm = () => {
 
   return (
     <>
-      <Navbar />
       <div className="create-report">
         <h1>Report an Incident</h1>
         <form onSubmit={handlePost}>
