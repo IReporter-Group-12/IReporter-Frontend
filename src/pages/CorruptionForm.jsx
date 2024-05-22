@@ -88,76 +88,7 @@ const CorruptionForm = () => {
   // Hook for navigation
   const navigate = useNavigate();
 
-//   const handlePost = async (e) => {
-//     e.preventDefault();
 
-//     try {
-//         console.log("Incident Location:", incidentLocation); // Log incident location
-
-//         // Ensure userData and userData.id exist
-//         if (!userData || !userData.id) {
-//             console.error("Missing user ID");
-//             return;
-//         }
-
-//         // Collect the necessary data
-//         const data = {
-//             govt_agency: incidentLocation.governmentAgency || "Unknown Agency", // Provide a fallback value
-//             county: incidentLocation.county,
-//             title: incidentData.title,
-//             description: incidentData.description,
-//             user_id: userData.id,  // Use user_id to match backend model
-//             latitude: incidentLocation.latitude ? parseFloat(incidentLocation.latitude) : 0.0, // Ensure latitude is a float
-//             longitude: incidentLocation.longitude ? parseFloat(incidentLocation.longitude) : 0.0, // Ensure longitude is a float
-//             media: [], // Placeholder for media URLs
-//         };
-
-//         console.log("Data to be sent:", data); // Log data to be sent
-
-//         // Upload each media file and collect the URLs
-//         const mediaUrls = await Promise.all(incidentData.media.map(async (media) => {
-//             const mediaForm = new FormData();
-//             mediaForm.append("file", media);
-
-//             const uploadResponse = await fetch("http://localhost:5000/upload_report", {
-//                 method: "POST",
-//                 body: mediaForm,
-//             });
-
-//             if (!uploadResponse.ok) {
-//                 throw new Error("Media upload failed");
-//             }
-
-//             const uploadResult = await uploadResponse.json();
-//             return uploadResult.url;
-//         }));
-        
-//         // Add media URLs to data object
-//         data.media = mediaUrls;
-        
-
-//         console.log("Final data to be sent:", data); // Log final data to be sent
-
-//         // Send a POST request to create a new report
-//         const response = await fetch("http://localhost:5000/corruption_reports", {
-//             method: "POST",
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(data),
-//         });
-
-//         if (response.ok) {
-//             // Navigate to the home page upon successful submission
-//             navigate("/");
-//         } else {
-//             const errorText = await response.text();
-//             console.log("Report submission failed", errorText);
-//         }
-//     } catch (err) {
-//         console.log("Report submission failed", err.message);
-//     }
-// };
 const handlePost = async (e) => {
   e.preventDefault();
 

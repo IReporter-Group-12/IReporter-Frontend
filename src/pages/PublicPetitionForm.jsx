@@ -20,7 +20,7 @@ const PublicPetitionForm = () => {
 
   // State to store user data
   const [userData, setUserData] = useState({
-    idPassport: user.idPassport || "",
+    user_id: user.user_id || "",
     fullName: user.fullName || "",
     email: user.email || "",
   });
@@ -93,41 +93,71 @@ const PublicPetitionForm = () => {
   // Handle form submission
   const handlePost = async (e) => {
     e.preventDefault();
-
+  
     try {
-      // Create a FormData object to submit the form data
-      const reportForm = new FormData();
-      reportForm.append("idPassport", userData.idPassport);
-      reportForm.append("fullName", userData.fullName);
-      reportForm.append("email", userData.email);
-      reportForm.append("governmentAgency", incidentLocation.governmentAgency);
-      reportForm.append("county", incidentLocation.county);
-      reportForm.append("additionalInfo", incidentLocation.additionalInfo);
-      reportForm.append("latitude", incidentLocation.latitude);
-      reportForm.append("longitude", incidentLocation.longitude);
-      reportForm.append("title", incidentData.title);
-      reportForm.append("description", incidentData.description);
-
-      // Append media files to the form data
-      incidentData.media.forEach((media) => {
-        reportForm.append("media", media);
-      });
-
-      // Send the form data to the server
-      const response = await fetch("https://ireporter-api.onrender.com/public_petitions", {
+      // Collect the necessary data
+      const data = {
+        user_id: userData.user_id,
+        fullName: userData.fullName,
+        email: userData.email,
+        govt_agency: incidentLocation.govtAgency || "Unknown Agency", // Provide a fallback value
+        county: incidentLocation.county,
+        additionalInfo: incidentLocation.additionalInfo,
+        latitude: incidentLocation.latitude || null,
+        longitude: incidentLocation.longitude || null,
+        title: incidentData.title,
+        description: incidentData.description,
+        media: [], // Placeholder for media URLs
+      };
+  
+      console.log("Data to be sent:", data); // Log data to be sent
+  
+      // Upload each media file and collect the URLs
+      const mediaUrls = await Promise.all(incidentData.media.map(async (media) => {
+        const mediaForm = new FormData();
+        mediaForm.append("file", media);
+  
+        const uploadResponse = await fetch("http://127.0.0.1:5000/upload_resolution", {
+          method: "POST",
+          body: mediaForm,
+        });
+  
+        if (!uploadResponse.ok) {
+          throw new Error("Media upload failed");
+        }
+  
+        const uploadResult = await uploadResponse.json();
+        return uploadResult.url;
+      }));
+  
+      // Add media URLs to data object
+      data.media = mediaUrls;
+  
+      console.log("Final data to be sent:", data); // Log final data to be sent
+  
+      // Send a POST request to create a new report
+      const response = await fetch("http://127.0.0.1:5000/public_petitions", {
         method: "POST",
-        body: reportForm,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
       });
-
-      // Navigate to the home page if the response is successful
+  
       if (response.ok) {
+        // Show a success message to the user
+        alert("Report submitted successfully!");
+        // Navigate to the home page upon successful submission
         navigate("/");
+      } else {
+        const errorText = await response.text();
+        console.log("Report submission failed", errorText);
       }
     } catch (err) {
       console.log("Report submission failed", err.message);
     }
   };
-
+  
   // Function to get the user's current location
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -153,16 +183,16 @@ const PublicPetitionForm = () => {
         <form onSubmit={handlePost}>
           <div className="create-report_step1">
             <h2>Step 1: User Data</h2>
-            <hr />
+            <hr/>
             <div className="user-data">
               <p>ID/Passport No.</p>
               <input
                 type="text"
-                name="idPassport"
-                value={userData.idPassport}
+                name="user_id"
+                value={userData.user_id}
                 onChange={handleUserDataChange}
                 required
-              />
+              />                    
               <p>Full Name</p>
               <input
                 type="text"
@@ -196,8 +226,12 @@ const PublicPetitionForm = () => {
                 {/* Replace with dynamic options */}
                 <option value="">Select Agency</option>
                 {/* Example agencies */}
-                <option value="Agency1">Agency 1</option>
-                <option value="Agency2">Agency 2</option>
+                <option value="Agency1">Ministry of Health</option>
+                <option value="Agency2">Kenya Ports Authority</option>
+                <option value="Agency2">Judicial Service Commision</option>
+                <option value="Agency2">Kenya Wildlife Service</option>
+                <option value="Agency2">Kenya Bureau of Standards</option>
+                <option value="Agency2">KEBS</option>
               </select>
               <p>Which county does the petition you wish to submit pertain to?</p>
               <input
