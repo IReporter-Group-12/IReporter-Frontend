@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import Slide from "../components/Slide";
 import Modal from "../components/Modal";
 import "../styles/Dashboard.css"
@@ -7,48 +6,71 @@ import "../styles/Dashboard.css"
 
 export default function UserDashboard() {
 
+    // getting items in localstorage and assigning them to variables
+    const user_id = localStorage.getItem("user_id")
+    const username = localStorage.getItem("username")
+    const email = localStorage.getItem("email")
+    const current_report = localStorage.getItem("report_id")
+
     const [corruptionReports, setCorruptionReports] = useState([])
     const [publicPetitions, setPublicPetitions] = useState([])
 
     const [corruptionForm, setCorruptionForm] = useState({
 		governmentAgency: "",
-		county: "",
-		latitude: "",
-		longitude: "",
-		description: "",
-		media: [],
+		"county": "",
+		"latitude": "",
+		"longitude": "",
+		"description": "",
+		"media": [],
 	});
 
     const [petitionForm, setPetitionForm] = useState({
-        governmentAgency: "",
-        county: "",
-        latitude: "",
-        longitude: "",
-        description: "",
-        media: [],
+        "governmentAgency": "",
+        "county": "",
+        "latitude": "",
+        "longitude": "",
+        "description": "",
+        "media": [],
     });
 
 
-    // const user = useSelector((state) => state.user)
-    const user_id = localStorage.getItem("user_id")
-    const username = localStorage.getItem("username")
-    const email = localStorage.getItem("email")
-
     const [showCorruptionModal, setShowCorruptionModal] = useState(false);
 	const handleOpenCorruptionModal = () => setShowCorruptionModal(true);
-	const handleCloseCorruptionModal = () => setShowCorruptionModal(false);
+	const handleCloseCorruptionModal = () => {
+        setShowCorruptionModal(false);
+        setCorruptionForm({
+            "governmentAgency": "",
+            "county": "",
+            "latitude": "",
+            "longitude": "",
+            "description": "",
+            "media": [],
+        })
+    }
+
+    const [showPetitionModal, setShowPetitionModal] = useState(false);
+    const handleOpenPetitionModal = () => setShowPetitionModal(true);
+    const handleClosePetitionModal = () => {
+        setShowPetitionModal(false);
+        setPetitionForm({
+            "governmentAgency": "",
+            "county": "",
+            "latitude": "",
+            "longitude": "",
+            "description": "",
+            "media": [],
+        })
+    }
+
     const handleCorruptionClick = (id, status) => {
-        if(status !== "Pending"){
+        if (status !== "Pending") {
             alert("Sorry, you cannot edit your report after it has been reviewed.")
-        }else{
+        } else {
             localStorage.setItem("report_id", id)
             handleOpenCorruptionModal()
         }
     }
 
-    const [showPetitionModal, setShowPetitionModal] = useState(false);
-    const handleOpenPetitionModal = () => setShowPetitionModal(true);
-    const handleClosePetitionModal = () => setShowPetitionModal(false);
     const handlePetitionClick = (id, status) => {
 		if (status !== "Pending") {
 			alert("Sorry, you cannot edit your report after it has been reviewed.");
@@ -59,13 +81,32 @@ export default function UserDashboard() {
 	};
 
 
-    const handleCorruptionChange = () => {
-        console.log('kuku')
+    const handleCorruptionChange = (e) => {
+        // Setting the variables to the field form attributes
+        const fieldName = e.target.name
+        const value = e.target.value
+
+        // function to set the formData state to the value of the forms
+        setCorruptionForm({
+            ...corruptionForm,
+            [fieldName]: value
+        })
+        // console.log(corruptionForm)
     }
 
 
-    const handlePetitionChange = () => {
-        console.log('kuku')
+    const handlePetitionChange = (e) => {
+        // Setting the variables to the field form attributes
+        const fieldName = e.target.name
+        const value = e.target.value
+
+        // function to set the formData state to the value of the forms
+        setPetitionForm({
+            ...petitionForm,
+            [fieldName]: value
+        })
+        // console.log(petitionForm)
+
     }
 
     const handleCorruptionSubmit = (e) => {
@@ -77,6 +118,7 @@ export default function UserDashboard() {
         //     const res = await fetch()
         // }
     }
+
     const handlePetitionSubmit = (e) => {
         e.preventDefault();
         alert("Form submitted!");
@@ -171,7 +213,7 @@ export default function UserDashboard() {
 				handleClose={handleCloseCorruptionModal}>
 				<form
                     name="edit-corruption"
-					onSubmit={(e) => handleCorruptionSubmit}>
+					onSubmit={(e) => handleCorruptionSubmit(e)}>
 					<h2>Edit Corruption Report</h2>
                     <h4>You may add any updates to your report in this form</h4>
 
@@ -185,23 +227,23 @@ export default function UserDashboard() {
                     <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                     
                     <label htmlFor="governmentAgency">Government Agency:</label>
-                    <input type="text" id="governmentAgency" value ={corruptionForm.governmentAgency} name="governmentAgency"  /> <br />
+                    <input type="text" id="governmentAgency"  name="governmentAgency" onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="county">County:</label>
-                    <input type="text" id="county" value={corruptionForm.county} name="county"  /> <br />
+                    <input type="text" id="county" name="county" onChange={handleCorruptionChange} /> <br />
                                         
                     <label htmlFor="latitude">Latitude:</label>
-                    <input type="text" id="latitude" value={corruptionForm.latitude} name="latitude"  /> <br />
+                    <input type="text" id="latitude" name="latitude" onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="longitude">Longitude:</label>
-                    <input type="text" id="longitude" value={corruptionForm.longitude} name="longitude"  /> <br />
+                    <input type="text" id="longitude" name="longitude" onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="description">Description:</label>
-                  <textarea type="textarea" id="description" name="description" form="edit-corruption" maxLength={200} rows={4} cols={30} /> <br />
+                    <textarea type="textarea" id="description" name="description" form="edit-corruption" onChange={handleCorruptionChange} maxLength={200} rows={4} cols={30} /> <br />
                     
                     <label htmlFor="media">Media:</label>
                     <input type="file" id="media" name="media" multiple /> <br />
-					<button type="submit">Submit</button>
+					<button type="submit" >Submit</button>
 				</form>
 			</Modal>
 
@@ -251,7 +293,7 @@ export default function UserDashboard() {
 					handleClose={handleClosePetitionModal}>
 					<form
                         name="edit-petition"
-						onSubmit={(e) => handlePetitionSubmit}>
+						onSubmit={(e) => handlePetitionSubmit(e)}>
 						<h2>Edit Public Petition</h2>
                         <h4>You may add any updates to your report in this form</h4>
 
@@ -265,19 +307,19 @@ export default function UserDashboard() {
                         <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                         
                         <label htmlFor="governmentAgency">Government Agency:</label>
-                        <input type="text" id="governmentAgency" name="governmentAgency" value={petitionForm.governmentAgency} /> <br />
+                        <input type="text" id="governmentAgency" name="governmentAgency"  onChange={handlePetitionChange} /> <br />
                         
                         <label htmlFor="county">County:</label>
-                        <input type="text" id="county" name="county"  value={petitionForm.county}/> <br />
+                        <input type="text" id="county" name="county" onChange={handlePetitionChange} /> <br />
                                                 
                         <label htmlFor="latitude">Latitude:</label>
-                        <input type="text" id="latitude" name="latitude" value={petitionForm.latitude} /> <br />
+                        <input type="text" id="latitude" name="latitude" onChange={handlePetitionChange} /> <br />
                         
                         <label htmlFor="longitude">Longitude:</label>
-                        <input type="text" id="longitude" name="longitude" value={petitionForm.longitude} /> <br />
+                        <input type="text" id="longitude" name="longitude" onChange={handlePetitionChange} /> <br />
                                 
                         <label htmlFor="description">Description:</label>
-                      <textarea type="text" id="description" name="description" form="edit-petition" maxLength={200} rows={4} cols={30} /> <br />
+                        <textarea type="text" id="description" name="description" form="edit-petition" onChange={handlePetitionChange} maxLength={200} rows={4} cols={30} /> <br />
                         
                         <label htmlFor="media">Media:</label>
                         <input type="file" id="media" name="media" multiple /> <br />
