@@ -16,19 +16,19 @@ export default function UserDashboard() {
     const [publicPetitions, setPublicPetitions] = useState([])
 
     const [corruptionForm, setCorruptionForm] = useState({
-		governmentAgency: "",
+		"govt_agency": "",
 		"county": "",
-		"latitude": "",
-		"longitude": "",
+		"latitude": 0,
+		"longitude": 0,
 		"description": "",
 		"media": [],
 	});
 
     const [petitionForm, setPetitionForm] = useState({
-        "governmentAgency": "",
+        "govt_agency": "",
         "county": "",
-        "latitude": "",
-        "longitude": "",
+        "latitude": 0,
+        "longitude": 0,
         "description": "",
         "media": [],
     });
@@ -39,10 +39,10 @@ export default function UserDashboard() {
 	const handleCloseCorruptionModal = () => {
         setShowCorruptionModal(false);
         setCorruptionForm({
-            "governmentAgency": "",
+            "govt_agency": "",
             "county": "",
-            "latitude": "",
-            "longitude": "",
+            "latitude": 0,
+            "longitude": 0,
             "description": "",
             "media": [],
         })
@@ -53,10 +53,10 @@ export default function UserDashboard() {
     const handleClosePetitionModal = () => {
         setShowPetitionModal(false);
         setPetitionForm({
-            "governmentAgency": "",
+            "govt_agency": "",
             "county": "",
-            "latitude": "",
-            "longitude": "",
+            "latitude": 0,
+            "longitude": 0,
             "description": "",
             "media": [],
         })
@@ -109,24 +109,65 @@ export default function UserDashboard() {
 
     }
 
-    const handleCorruptionSubmit = (e) => {
+    const handleCorruptionSubmit = async (e) => {
+
         e.preventDefault();
-        alert("Form submitted!");
-        handleCloseCorruptionModal();
+        console.log(corruptionForm)
+        
+        try {
+            const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${current_report}`, {
+                method : "PATCH",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify(corruptionForm)
+            })
+
+            const data = await res.json()
+            
+            if (res.ok){
+                alert("Successfully updated report!");
+                handleCloseCorruptionModal();
+                window.location.reload()
+            } else{
+                alert(`Failed to update report: ${data.error || "Unknown error"}`)
+            }
+
+        }
+        catch (err) {
+            console.error(`Error: ${err.message}`);
+        }
+    };
     
-        // async () => {
-        //     const res = await fetch()
-        // }
-    }
 
-    const handlePetitionSubmit = (e) => {
+    const handlePetitionSubmit = async (e) => {
+
         e.preventDefault();
-        alert("Form submitted!");
-        handleClosePetitionModal();
+        console.log(petitionForm)
+        
+        try {
+            const res = await fetch(`http://127.0.0.1:5000/public_petitions/${current_report}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(corruptionForm)
+            })
 
-        // async () => {
-        //     const res = await fetch()
-        // }
+            const data = await res.json()
+
+            if (res.ok) {
+                alert("Successfully updated report!");
+                handleCloseCorruptionModal();
+                window.location.reload()
+            } else {
+                alert(`Failed to update report: ${data.error || "Unknown error"}`)
+            }
+
+        }
+        catch (err) {
+            console.error(`Error: ${err.message}`);
+        }
     }
 
 
@@ -226,8 +267,8 @@ export default function UserDashboard() {
                     <label htmlFor="email">Email:</label>
                     <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                     
-                    <label htmlFor="governmentAgency">Government Agency:</label>
-                    <input type="text" id="governmentAgency"  name="governmentAgency" onChange={handleCorruptionChange} /> <br />
+                    <label htmlFor="govt_agency">Government Agency:</label>
+                    <input type="text" id="govt_aency"  name="govt_agency" onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="county">County:</label>
                     <input type="text" id="county" name="county" onChange={handleCorruptionChange} /> <br />
@@ -306,8 +347,8 @@ export default function UserDashboard() {
                         <label htmlFor="email">Email:</label>
                         <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                         
-                        <label htmlFor="governmentAgency">Government Agency:</label>
-                        <input type="text" id="governmentAgency" name="governmentAgency"  onChange={handlePetitionChange} /> <br />
+                        <label htmlFor="govt_agency">Government Agency:</label>
+                        <input type="text" id="govt_agency" name="govt_agency"  onChange={handlePetitionChange} /> <br />
                         
                         <label htmlFor="county">County:</label>
                         <input type="text" id="county" name="county" onChange={handlePetitionChange} /> <br />
