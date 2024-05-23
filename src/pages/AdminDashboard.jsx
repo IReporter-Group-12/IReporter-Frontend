@@ -1,98 +1,323 @@
 import React, { useState, useEffect } from "react";
 import Slide from "../components/Slide";
+import Modal from "../components/Modal";
 import "../styles/Dashboard.css"
 
 
-export default function UserDashboard() {
+export default function AdminDashboard() {
+    const [corruptionReports, setCorruptionReports] = useState([]);
+    const [publicPetitions, setPublicPetitions] = useState([]);
 
-    const [corruptionReports, setCorruptionReports] = useState([])
-    const [publicPetitions, setPublicPetitions] = useState([])
+    // Getting items in localstorage and assigning them to variables
+    const user_id = localStorage.getItem("user_id");
+    const username = localStorage.getItem("username");
+    const email = localStorage.getItem("email");
+    const current_report = localStorage.getItem("report_id");
 
-    useEffect(
-		() =>
-			async function () {
-				try {
-					const res = await fetch(
-						"http://127.0.0.1:5000/corruption_reports",
-						{
-							method: "GET",
-						}
-					);
-					const data = await res.json();
-					console.log('Corruption Reports: ', data);
-					setCorruptionReports(data);
-				} catch (err) {
-					console.error(`Error: ${err.message}`);
-				}
-			},
-		[]
-	);
+    const [corruptionForm, setCorruptionForm] = useState({
+        status: "",
+        admin_comments: ""
+    });
 
-        useEffect(
-			() =>
-				async function () {
-					try {
-						const res = await fetch(
-							"http://127.0.0.1:5000/public_petitions",
-							{
-								method: "GET",
-							}
-						);
-						const data = await res.json();
-						console.log('Public Petitions: ', data);
-						setPublicPetitions(data);
-					} catch (err) {
-						console.error(`Error: ${err.message}`);
-					}
-				},
-			[]
-		);
+    const [petitionForm, setPetitionForm] = useState({
+        status: "",
+        admin_comments: ""
+    });
 
-  return (
-    <>
-        <Slide />
+    // Managing modal visibility state
+    const [showCorruptionModal, setShowCorruptionModal] = useState(false);
+    const handleOpenCorruptionModal = () => setShowCorruptionModal(true);
+    const handleCloseCorruptionModal = () => {
+        setShowCorruptionModal(false);
+        setCorruptionForm({
+            status: "",
+            admin_comments: ""
+        });
+    };
 
-        <h2 className="section-header">All Corruption Reports</h2>
-        <div className="card-container">
-            {corruptionReports.map((report, index) => (
-                <div className="card" key={index}>
-                    <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
-                    <div className="card-content">
-                        <small className={`${
-                            report.status === 'Pending' ? 'status-pending' : 
-                            report.status === 'Resolved' ? 'status-resolved' :
-                            report.status ==='Rejected' ?'status-rejected' : 'report-status'
-                        }`}> {report.status} </small>
-                        <h3 className="card-title">{report.title}</h3>
-                        <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
-                        <p className="card-id">ID: {report.id}</p>
-                        <p className="card-description">{report.description}</p>
-                        <button className="card-button">Review Report</button>
+    const [showPetitionModal, setShowPetitionModal] = useState(false);
+    const handleOpenPetitionModal = () => setShowPetitionModal(true);
+    const handleClosePetitionModal = () => {
+        setShowPetitionModal(false);
+        setPetitionForm({
+            status: "",
+            admin_comments: ""
+        });
+    };
+
+    const handleCorruptionChange = (e) => {
+        const fieldName = e.target.name;
+        const value = e.target.value;
+        setCorruptionForm((prevForm) => ({
+            ...prevForm,
+            [fieldName]: value
+        }));
+        console.log("CorruptionForm", corruptionForm);
+    };
+
+    const handlePetitionChange = (e) => {
+        const fieldName = e.target.name;
+        const value = e.target.value;
+        setPetitionForm((prevForm) => ({
+            ...prevForm,
+            [fieldName]: value
+        }));
+        console.log("PetitionForm", petitionForm);
+    };
+
+    const handleCorruptionClick = (id) => {
+        localStorage.setItem("report_id", id);
+        handleOpenCorruptionModal();
+    };
+
+    const handlePetitionClick = (id) => {
+        localStorage.setItem("report_id", id);
+        handleOpenPetitionModal();
+    };
+
+    const handleCorruptionSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(`http://127.0.0.1:5000/admin_corruption_reports/${current_report}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(corruptionForm)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Successfully updated report!");
+                handleCloseCorruptionModal();
+                window.location.reload();
+            } else {
+                alert(`Failed to update report: ${data.error || "Unknown error"}`);
+            }
+        } catch (err) {
+            console.error(`Error: ${err.message}`);
+        }
+    };
+
+    const handlePetitionSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(`http://127.0.0.1:5000/admin_public_petitions/${current_report}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(petitionForm)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Successfully updated report!");
+                handleClosePetitionModal();
+                window.location.reload();
+            } else {
+                alert(`Failed to update report: ${data.error || "Unknown error"}`);
+            }
+        } catch (err) {
+            console.error(`Error: ${err.message}`);
+        }
+    };
+
+    useEffect(() => {
+        async function fetchCorruptionReports() {
+            try {
+                const res = await fetch("http://127.0.0.1:5000/corruption_reports", {
+                    method: "GET"
+                });
+                const data = await res.json();
+                setCorruptionReports(data);
+            } catch (err) {
+                console.error(`Error: ${err.message}`);
+            }
+        }
+
+        fetchCorruptionReports();
+    }, []);
+
+    useEffect(() => {
+        async function fetchPublicPetitions() {
+            try {
+                const res = await fetch("http://127.0.0.1:5000/public_petitions", {
+                    method: "GET"
+                });
+                const data = await res.json();
+                setPublicPetitions(data);
+            } catch (err) {
+                console.error(`Error: ${err.message}`);
+            }
+        }
+
+        fetchPublicPetitions();
+    }, []);
+
+    return (
+        <>
+            <Slide />
+
+            <h2 className="section-header">All Corruption Reports</h2>
+            <h1 className="welcome-message">Welcome To The Admin Dashboard!</h1>
+
+            <div className="card-container">
+                {corruptionReports.map((report, index) => (
+                    <div className="card" key={index}>
+                        <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                        <div className="card-content">
+                            <small className={`${report.status === 'Pending' ? 'status-pending' :
+                                    report.status === 'Resolved' ? 'status-resolved' :
+                                        report.status === 'Rejected' ? 'status-rejected' : 'report-status'
+                                }`}> {report.status} </small>
+                            <h3 className="card-title">{report.title}</h3>
+                            <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                            <p className="card-id">ID: {report.id}</p>
+                            <p className="card-description">{report.description}</p>
+                            <p className="card-admin comments">{report.admin_comments}</p>
+
+                            <button
+                                onClick={() => handleCorruptionClick(report.id)}
+                                className="card-button">
+                                Edit Report
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
-        </div>
+                ))}
+            </div>
 
-        <h2 className="section-header">All Public Petitions</h2>
-        <div className="card-container">
-            {publicPetitions.map((report, index) => (
-                <div className="card" key={index}>
-                    <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
-                    <div className="card-content">
-                        <small className={`${
-                            report.status === 'Pending' ? 'status-pending' : 
-                            report.status === 'Resolved' ? 'status-resolved' :
-                            report.status ==='Rejected' ?'status-rejected' : 'report-status'
-                        }`}> {report.status} </small>
-                        <h3 className="card-title">{report.title}</h3>
-                        <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
-                        <p className="card-id">ID: {report.id}</p>
-                        <p className="card-description">{report.description}</p>
-                        <button className="card-button">Review Report</button>
+            {/* Corruption Reports editing modal */}
+            <Modal show={showCorruptionModal} handleClose={handleCloseCorruptionModal}>
+                <form name="edit-corruption" onSubmit={handleCorruptionSubmit}>
+                    <h2>Review Corruption Report</h2>
+                    <h4>You may change the status and add additional comments.</h4>
+
+                    <div>
+                        <h5>Change Report Status:</h5>
+                        <input
+                            type="radio"
+                            id="underReview"
+                            name="status"
+                            value="Under Review"
+                            checked={corruptionForm.status === "Under Review"}
+                            onChange={handleCorruptionChange}
+                        />
+                        <label htmlFor="underReview">Under Review</label> <br />
+                        <input
+                            type="radio"
+                            id="resolved"
+                            name="status"
+                            value="Resolved"
+                            checked={corruptionForm.status === "Resolved"}
+                            onChange={handleCorruptionChange}
+                        />
+                        <label htmlFor="resolved">Resolved</label> <br />
+                        <input
+                            type="radio"
+                            id="rejected"
+                            name="status"
+                            value="Rejected"
+                            checked={corruptionForm.status === "Rejected"}
+                            onChange={handleCorruptionChange}
+                        />
+                        <label htmlFor="rejected">Rejected</label>
                     </div>
-                </div>
-            ))}
-        </div>
-    </>
-  )
+
+                    <label htmlFor="admin_comments">Admin Comments:</label>
+                    <textarea
+                        id="admin_comments"
+                        name="admin_comments"
+                        value={corruptionForm.admin_comments}
+                        onChange={handleCorruptionChange}
+                        maxLength={200}
+                        rows={4}
+                        cols={30}
+                    />
+                    <br />
+
+                    <button type="submit">Submit</button>
+                </form>
+            </Modal>
+
+            <h2 className="section-header">All Public Petitions</h2>
+            <div className="card-container">
+                {publicPetitions.map((report, index) => (
+                    <div className="card" key={index}>
+                        <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                        <div className="card-content">
+                            <small className={`${report.status === 'Pending' ? 'status-pending' :
+                                    report.status === 'Resolved' ? 'status-resolved' :
+                                        report.status === 'Rejected' ? 'status-rejected' : 'report-status'
+                                }`}> {report.status} </small>
+                            <h3 className="card-title">{report.title}</h3>
+                            <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                            <p className="card-id">ID: {report.id}</p>
+                            <p className="card-description">{report.description}</p>
+                            <button
+                                onClick={() => handlePetitionClick(report.id)}
+                                className="card-button">
+                                Edit Report
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Petition Reports editing modal */}
+            <Modal show={showPetitionModal} handleClose={handleClosePetitionModal}>
+                <form name="edit-petition" onSubmit={handlePetitionSubmit}>
+                    <h2>Review Petition Report</h2>
+                    <h4>You may change the status and add additional comments.</h4>
+
+                    <div>
+                        <h5>Change Report Status:</h5>
+                        <input
+                            type="radio"
+                            id="underReviewPetition"
+                            name="status"
+                            value="Under Review"
+                            checked={petitionForm.status === "Under Review"}
+                            onChange={handlePetitionChange}
+                        />
+                        <label htmlFor="underReviewPetition">Under Review</label> <br />
+                        <input
+                            type="radio"
+                            id="resolvedPetition"
+                            name="status"
+                            value="Resolved"
+                            checked={petitionForm.status === "Resolved"}
+                            onChange={handlePetitionChange}
+                        />
+                        <label htmlFor="resolvedPetition">Resolved</label> <br />
+                        <input
+                            type="radio"
+                            id="rejectedPetition"
+                            name="status"
+                            value="Rejected"
+                            checked={petitionForm.status === "Rejected"}
+                            onChange={handlePetitionChange}
+                        />
+                        <label htmlFor="rejectedPetition">Rejected</label>
+                    </div>
+
+                    <label htmlFor="admin_comments_petition">Admin Comments:</label>
+                    <textarea
+                        id="admin_comments_petition"
+                        name="admin_comments"
+                        value={petitionForm.admin_comments}
+                        onChange={handlePetitionChange}
+                        maxLength={200}
+                        rows={4}
+                        cols={30}
+                    />
+                    <br />
+
+                    <button type="submit">Submit</button>
+                </form>
+            </Modal>
+        </>
+    );
 }

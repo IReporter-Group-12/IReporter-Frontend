@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Slide from "../components/Slide";
 import Modal from "../components/Modal";
+import Categories from "../components/Categories";
 import "../styles/Dashboard.css"
 
 
@@ -23,7 +24,6 @@ export default function UserDashboard() {
 		"description": "",
 		"media": [],
 	});
-
     const [petitionForm, setPetitionForm] = useState({
         "govt_agency": "",
         "county": "",
@@ -47,7 +47,6 @@ export default function UserDashboard() {
             "media": [],
         })
     }
-
     const [showPetitionModal, setShowPetitionModal] = useState(false);
     const handleOpenPetitionModal = () => setShowPetitionModal(true);
     const handleClosePetitionModal = () => {
@@ -62,6 +61,7 @@ export default function UserDashboard() {
         })
     }
 
+
     const handleCorruptionClick = (id, status) => {
         if (status !== "Pending") {
             alert("Sorry, you cannot edit your report after it has been reviewed.")
@@ -70,7 +70,6 @@ export default function UserDashboard() {
             handleOpenCorruptionModal()
         }
     }
-
     const handlePetitionClick = (id, status) => {
 		if (status !== "Pending") {
 			alert("Sorry, you cannot edit your report after it has been reviewed.");
@@ -93,8 +92,6 @@ export default function UserDashboard() {
         })
         // console.log(corruptionForm)
     }
-
-
     const handlePetitionChange = (e) => {
         // Setting the variables to the field form attributes
         const fieldName = e.target.name
@@ -106,13 +103,13 @@ export default function UserDashboard() {
             [fieldName]: value
         })
         // console.log(petitionForm)
-
     }
+
 
     const handleCorruptionSubmit = async (e) => {
 
         e.preventDefault();
-        console.log(corruptionForm)
+        // console.log(corruptionForm)
         
         try {
             const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${current_report}`, {
@@ -132,18 +129,15 @@ export default function UserDashboard() {
             } else{
                 alert(`Failed to update report: ${data.error || "Unknown error"}`)
             }
-
         }
         catch (err) {
             console.error(`Error: ${err.message}`);
         }
     };
-    
-
     const handlePetitionSubmit = async (e) => {
 
         e.preventDefault();
-        console.log(petitionForm)
+        // console.log(petitionForm)
         
         try {
             const res = await fetch(`http://127.0.0.1:5000/public_petitions/${current_report}`, {
@@ -163,7 +157,6 @@ export default function UserDashboard() {
             } else {
                 alert(`Failed to update report: ${data.error || "Unknown error"}`)
             }
-
         }
         catch (err) {
             console.error(`Error: ${err.message}`);
@@ -184,28 +177,28 @@ export default function UserDashboard() {
 			},
 		[user_id]
 	);
+    useEffect(
+        () => async function () {
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/public_petitions/${user_id}/`,
+                        {method: "GET"}
+                    );
+                    const data = await res.json();
+                    console.log('Public Petitions: ', data);
+                    setPublicPetitions(data);
+                } catch (err) {
+                    console.error(`Error: ${err.message}`);
+                }
+            },
+        [user_id]
+    );
 
-        useEffect(
-			() => async function () {
-					try {
-						const res = await fetch(`http://127.0.0.1:5000/public_petitions/${user_id}/`,
-							{method: "GET"}
-						);
-						const data = await res.json();
-						console.log('Public Petitions: ', data);
-						setPublicPetitions(data);
-					} catch (err) {
-						console.error(`Error: ${err.message}`);
-					}
-				},
-			[user_id]
-		);
-
+    
   return (
 		<>
 			<Slide />
-			{/* <Categories /> */}
-            <h1>Welcome To Your Dashboard, {username}</h1>
+			<Categories />
+            <h1 className="welcome-message">Welcome To Your Dashboard, {username}</h1>
 
 			<h2 className="section-header">Your Corruption Reports</h2>
 			<div className="card-container">

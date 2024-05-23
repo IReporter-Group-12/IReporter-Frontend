@@ -8,6 +8,14 @@
   text-align: center; /* Center align the text */
 }
 
+.welcome-message {
+  color: #333; /* Dark gray text */
+  padding: 15px 20px; /* Add some padding */
+  font-size: 2em; /* Increase font size slightly */
+  margin: 20px; /* Add some margin for separation */
+  text-align: center; /* Center align the text */
+
+}
 .card-container {
     display: flex;
     flex-wrap: wrap;

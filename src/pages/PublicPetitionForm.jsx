@@ -179,7 +179,7 @@ const PublicPetitionForm = () => {
   return (
     <>
       <div className="create-report">
-        <h1>Intervention Report</h1>
+        <h1>Propose a Civil Intervention</h1>
         <form onSubmit={handlePost}>
           <div className="create-report_step1">
             <h2>Step 1: User Data</h2>

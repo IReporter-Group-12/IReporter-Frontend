@@ -32,6 +32,9 @@ const Navbar = () => {
   const navigate = useNavigate();
 
 
+  const loggedIn = localStorage.getItem("logged_in")
+console.log(loggedIn)
+
   return (
 		<div className="navbar">
 			{/* Logo linking to the homepage */}
@@ -42,8 +45,8 @@ const Navbar = () => {
 				/>
 			</a>
 
-			<Link to="/user-dashboard">User Dashboard</Link>
-			<Link to="/admin-dashboard">Admin Dashboard</Link>
+			{/* <Link to="/user-dashboard" className="nav-button">User Dashboard</Link>
+			<Link to="/admin-dashboard" className="nav-button">Admin Dashboard</Link> */}
 
 			{/* Search bar section */}
 			<div className="navbar_search">
@@ -65,6 +68,8 @@ const Navbar = () => {
 
 			{/* Right section of the navbar */}
 			<div className="navbar_right">
+
+
 				<button
 					className="navbar_right_account"
 					onClick={() => setDropdownMenu(!dropdownMenu)}>
@@ -85,28 +90,41 @@ const Navbar = () => {
 				</button>
 
 				{/* Dropdown menu for unauthenticated users */}
-				{dropdownMenu && !user && (
+				{dropdownMenu && loggedIn && (
 					<div className="navbar_right_accountmenu">
 						<Link to="/login">Log In</Link>
-						<Link to="/user-register">Sign Up</Link>
 						<Link to="/admin-register">Government Admin</Link>
 					</div>
 				)}
 
 				{/* Dropdown menu for authenticated users */}
-				{dropdownMenu && user && (
+				{dropdownMenu && !loggedIn && (
 					<div className="navbar_right_accountmenu">
-						<Link to="/profile">Profile</Link>
-						<Link to="/create-listing">Government Admin</Link>
 						<Link
 							to="/login"
-							onClick={() => {
-								dispatch(setLogout());
-							}}>
+							onClick={async () => {
+
+								const res = await fetch("http://127.0.0.1:5000/logout",{
+									method : "POST"
+								})
+
+								if (res.ok){
+								localStorage.setItem('logged_in', false)
+								localStorage.setItem("user_id", null)
+								localStorage.setItem('username', null)
+								localStorage.setItem("email", null)
+								localStorage.setItem("role", null)
+								localStorage.setItem("report_id", null)
+
+								alert("You have been logged out successfully!")
+								}
+							}
+							}>
 							Log Out
 						</Link>
 					</div>
 				)}
+
 			</div>
 		</div>
   );

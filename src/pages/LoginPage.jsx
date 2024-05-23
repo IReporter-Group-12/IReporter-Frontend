@@ -57,17 +57,10 @@ const LoginPage = () => {
 				localStorage.setItem("role", data.role);
 				localStorage.setItem("username", data.username)
 				localStorage.setItem("email", data.email)
-
-
-				// Dispatching setLogin action with user id, username and email data to the Redux store
-				dispatch(
-					setLogin({
-						data
-					})
-				);
+				localStorage.setItem("logged_in", true)
 				// Navigating to the home page after successful login
 				alert("Login Successful!");
-				navigate("/");
+				navigate("/user-dashboard");
 			} else {
 				alert(`Login failed: ${data.error || "Unknown error"}`);
 			}

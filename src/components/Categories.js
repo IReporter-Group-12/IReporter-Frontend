@@ -9,11 +9,13 @@ const Categories = () => {
   // useNavigate hook is used to programmatically navigate the user
   const navigate = useNavigate();
 
+  const loggedIn = localStorage.getItem("logged_in")
+
   // Function to handle icon click events
   const handleIconClick = (e, categoryLabel) => {
     e.preventDefault(); // Prevent the default behavior of the link
     // Navigate to specific paths based on the category label
-    if (categoryLabel === "Report a corruption") {
+    if (categoryLabel === "Report a corruption" ) {
       navigate("/corruption-form"); // Navigate to the corruption report form
     } else if (categoryLabel === "Public Petition") {
       navigate("/public-petition"); // Navigate to the public petition page

@@ -194,9 +194,8 @@ const handlePost = async (e) => {
 
   return (
     <>
-      <Navbar />
       <div className="create-report">
-        <h1>Report an Incident</h1>
+        <h1>Report an Corruption Incident</h1>
         <form onSubmit={handlePost}>
           {/* Step 1: User Data */}
           <div className="create-report_step1">

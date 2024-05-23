@@ -33,7 +33,7 @@ function App() {
           <Route path="/public-petition" element={<PublicPetitionForm />} /> 
 
         </Routes>
-        <Footer />
+      <Footer />
       </BrowserRouter>
     </div>
   );
