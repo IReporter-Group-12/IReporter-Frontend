@@ -27,8 +27,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/create-listing-corruption" element={<CorruptionForm />} />
-          <Route path="/create-listing-petition" element={<PublicPetitionForm />} />
           <Route path="/properties/search/:search" element={<SearchPage />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/corruption-form" element={<CorruptionForm />} />  
