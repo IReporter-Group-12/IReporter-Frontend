@@ -13,21 +13,17 @@ export default function UserDashboard() {
     const [corruptionForm, setCorruptionForm] = useState({
 		governmentAgency: "",
 		county: "",
-		additionalInfo: "",
 		latitude: "",
 		longitude: "",
-		title: "",
 		description: "",
 		media: [],
 	});
-    
+
     const [petitionForm, setPetitionForm] = useState({
         governmentAgency: "",
         county: "",
-        additionalInfo: "",
         latitude: "",
         longitude: "",
-        title: "",
         description: "",
         media: [],
     });
@@ -35,7 +31,6 @@ export default function UserDashboard() {
 
     // const user = useSelector((state) => state.user)
     const user_id = localStorage.getItem("user_id")
-    const role = localStorage.getItem("role");
     const username = localStorage.getItem("username")
     const email = localStorage.getItem("email")
 
@@ -63,13 +58,34 @@ export default function UserDashboard() {
 		}
 	};
 
-    // const handleSubmit = e =>{
-    //     e.preventDefault
 
-    //     async () => {
-    //         const res = await fetch()
-    //     }
-    // }
+    const handleCorruptionChange = () => {
+        console.log('kuku')
+    }
+
+
+    const handlePetitionChange = () => {
+        console.log('kuku')
+    }
+
+    const handleCorruptionSubmit = (e) => {
+        e.preventDefault();
+        alert("Form submitted!");
+        handleCloseCorruptionModal();
+    
+        // async () => {
+        //     const res = await fetch()
+        // }
+    }
+    const handlePetitionSubmit = (e) => {
+        e.preventDefault();
+        alert("Form submitted!");
+        handleClosePetitionModal();
+
+        // async () => {
+        //     const res = await fetch()
+        // }
+    }
 
 
     useEffect(
@@ -154,11 +170,8 @@ export default function UserDashboard() {
 				show={showCorruptionModal}
 				handleClose={handleCloseCorruptionModal}>
 				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						alert("Form submitted!");
-						handleCloseCorruptionModal();
-					}}>
+                    name="edit-corruption"
+					onSubmit={(e) => handleCorruptionSubmit}>
 					<h2>Edit Corruption Report</h2>
                     <h4>You may add any updates to your report in this form</h4>
 
@@ -172,25 +185,19 @@ export default function UserDashboard() {
                     <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                     
                     <label htmlFor="governmentAgency">Government Agency:</label>
-                    <input type="text" id="governmentAgency" name="governmentAgency"  /> <br />
+                    <input type="text" id="governmentAgency" value ={corruptionForm.governmentAgency} name="governmentAgency"  /> <br />
                     
                     <label htmlFor="county">County:</label>
-                    <input type="text" id="county" name="county"  /> <br />
-                    
-                    <label htmlFor="additionalInfo">Additional Info:</label>
-                    <input type="text" id="additionalInfo" name="additionalInfo"  /> <br />
-                    
+                    <input type="text" id="county" value={corruptionForm.county} name="county"  /> <br />
+                                        
                     <label htmlFor="latitude">Latitude:</label>
-                    <input type="text" id="latitude" name="latitude"  /> <br />
+                    <input type="text" id="latitude" value={corruptionForm.latitude} name="latitude"  /> <br />
                     
                     <label htmlFor="longitude">Longitude:</label>
-                    <input type="text" id="longitude" name="longitude"  /> <br />
-                    
-                    <label htmlFor="title">Title:</label>
-                    <input type="text" id="title" name="title"  /> <br />
+                    <input type="text" id="longitude" value={corruptionForm.longitude} name="longitude"  /> <br />
                     
                     <label htmlFor="description">Description:</label>
-                    <input type="textarea" id="description" name="description"  maxLength={200} /> <br />
+                  <textarea type="textarea" id="description" name="description" form="edit-corruption" maxLength={200} rows={4} cols={30} /> <br />
                     
                     <label htmlFor="media">Media:</label>
                     <input type="file" id="media" name="media" multiple /> <br />
@@ -238,16 +245,13 @@ export default function UserDashboard() {
 					</div>
 				))}
 
-                {/* public oetitions editing modal */}
+                {/* public petitions editing modal */}
 				<Modal
 					show={showPetitionModal}
 					handleClose={handleClosePetitionModal}>
 					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							alert("Form submitted!");
-							handleClosePetitionModal();
-						}}>
+                        name="edit-petition"
+						onSubmit={(e) => handlePetitionSubmit}>
 						<h2>Edit Public Petition</h2>
                         <h4>You may add any updates to your report in this form</h4>
 
@@ -261,25 +265,19 @@ export default function UserDashboard() {
                         <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                         
                         <label htmlFor="governmentAgency">Government Agency:</label>
-                        <input type="text" id="governmentAgency" name="governmentAgency"  /> <br />
+                        <input type="text" id="governmentAgency" name="governmentAgency" value={petitionForm.governmentAgency} /> <br />
                         
                         <label htmlFor="county">County:</label>
-                        <input type="text" id="county" name="county"  /> <br />
-                        
-                        <label htmlFor="additionalInfo">Additional Info:</label>
-                        <input type="text" id="additionalInfo" name="additionalInfo"  /> <br />
-                        
+                        <input type="text" id="county" name="county"  value={petitionForm.county}/> <br />
+                                                
                         <label htmlFor="latitude">Latitude:</label>
-                        <input type="text" id="latitude" name="latitude"  /> <br />
+                        <input type="text" id="latitude" name="latitude" value={petitionForm.latitude} /> <br />
                         
                         <label htmlFor="longitude">Longitude:</label>
-                        <input type="text" id="longitude" name="longitude"  /> <br />
-                        
-                        <label htmlFor="title">Title:</label>
-                        <input type="text" id="title" name="title"  /> <br />
-                        
+                        <input type="text" id="longitude" name="longitude" value={petitionForm.longitude} /> <br />
+                                
                         <label htmlFor="description">Description:</label>
-                        <input type="text" id="description" name="description"  /> <br />
+                      <textarea type="text" id="description" name="description" form="edit-petition" maxLength={200} rows={4} cols={30} /> <br />
                         
                         <label htmlFor="media">Media:</label>
                         <input type="file" id="media" name="media" multiple /> <br />
