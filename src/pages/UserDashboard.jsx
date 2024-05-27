@@ -8,6 +8,7 @@ import "../styles/Dashboard.css"
 export default function UserDashboard() {
 
     // getting items in localstorage and assigning them to variables
+    const loggedIn= localStorage.getItem("logged_in")
     const user_id = localStorage.getItem("user_id")
     const username = localStorage.getItem("username")
     const email = localStorage.getItem("email")
@@ -166,6 +167,7 @@ export default function UserDashboard() {
 
     useEffect(
 		() => async function () {
+            if(loggedIn === "true"){
 				try {
 					const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${user_id}/`,
 						{method: "GET"}
@@ -174,11 +176,13 @@ export default function UserDashboard() {
 					console.log('Corruption Reports: ', data);
 					setCorruptionReports(data);
 				} catch (err) {console.error(`Error: ${err.message}`);}
-			},
-		[user_id]
+            }
+		},
+		[loggedIn]
 	);
     useEffect(
         () => async function () {
+            if(loggedIn === "true"){
                 try {
                     const res = await fetch(`http://127.0.0.1:5000/public_petitions/${user_id}/`,
                         {method: "GET"}
@@ -189,15 +193,16 @@ export default function UserDashboard() {
                 } catch (err) {
                     console.error(`Error: ${err.message}`);
                 }
-            },
-        [user_id]
+            }
+        },
+        [loggedIn]
     );
 
     
   return (
 		<>
 			<Slide />
-			<Categories />
+			{/* <Categories /> */}
             <h1 className="welcome-message">Welcome To Your Dashboard, {username}</h1>
 
 			<h2 className="section-header">Your Corruption Reports</h2>

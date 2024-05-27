@@ -13,6 +13,7 @@ export default function AdminDashboard() {
     const username = localStorage.getItem("username");
     const email = localStorage.getItem("email");
     const current_report = localStorage.getItem("report_id");
+    const role = localStorage.getItem("role")
 
     const [corruptionForm, setCorruptionForm] = useState({
         status: null,
@@ -125,37 +126,35 @@ export default function AdminDashboard() {
         }
     };
 
-    useEffect(() => {
-        async function fetchCorruptionReports() {
-            try {
-                const res = await fetch("http://127.0.0.1:5000/corruption_reports", {
-                    method: "GET"
-                });
-                const data = await res.json();
-                setCorruptionReports(data);
-            } catch (err) {
-                console.error(`Error: ${err.message}`);
+    useEffect(
+        () => async function () {
+            if (role === 'admin') {
+                try {
+                    const res = await fetch("http://127.0.0.1:5000/corruption_reports", {
+                        method: "GET"
+                    });
+                    const data = await res.json();
+                    setCorruptionReports(data);
+                } catch (err) {
+                    console.error(`Error: ${err.message}`);
+                }
             }
-        }
+        }, [role]);
 
-        fetchCorruptionReports();
-    }, []);
-
-    useEffect(() => {
-        async function fetchPublicPetitions() {
-            try {
-                const res = await fetch("http://127.0.0.1:5000/public_petitions", {
-                    method: "GET"
-                });
-                const data = await res.json();
-                setPublicPetitions(data);
-            } catch (err) {
-                console.error(`Error: ${err.message}`);
+    useEffect(
+        () => async function () {
+            if(role === 'admin') {
+                try {
+                    const res = await fetch("http://127.0.0.1:5000/public_petitions", {
+                        method: "GET"
+                    });
+                    const data = await res.json();
+                    setPublicPetitions(data);
+                } catch (err) {
+                    console.error(`Error: ${err.message}`);
+                }
             }
-        }
-
-        fetchPublicPetitions();
-    }, []);
+        }, [role]);
 
     return (
         <>
@@ -164,30 +163,35 @@ export default function AdminDashboard() {
             <h1 className="welcome-message">Welcome To The Admin Dashboard!</h1>
 
             <h2 className="section-header">All Corruption Reports</h2>
-            <div className="card-container">
-                {corruptionReports.map((report, index) => (
-                    <div className="card" key={index}>
-                        <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
-                        <div className="card-content">
-                            <small className={`${report.status === 'Pending' ? 'status-pending' :
-                                    report.status === 'Resolved' ? 'status-resolved' :
-                                        report.status === 'Rejected' ? 'status-rejected' : 'report-status'
-                                }`}> {report.status} </small>
-                            <h3 className="card-title">{report.title}</h3>
-                            <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
-                            <p className="card-id">ID: {report.id}</p>
-                            <p className="card-description">{report.description}</p>
-                            <p className="card-admin comments">{report.admin_comments}</p>
 
-                            <button
-                                onClick={() => handleCorruptionClick(report.id)}
-                                className="card-button">
-                                Review Report
-                            </button>
+            {corruptionReports.length !== 0 ? 
+                <div className="card-container">
+                    {corruptionReports.map((report, index) => (
+                        <div className="card" key={index}>
+                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                            <div className="card-content">
+                                <small className={`${report.status === 'Pending' ? 'status-pending' :
+                                        report.status === 'Resolved' ? 'status-resolved' :
+                                            report.status === 'Rejected' ? 'status-rejected' : 'report-status'
+                                    }`}> {report.status} </small>
+                                <h3 className="card-title">{report.title}</h3>
+                                <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
+                                <p className="card-id">ID: {report.id}</p>
+                                <p className="card-description">{report.description}</p>
+                                <p className="card-admin comments">{report.admin_comments}</p>
+
+                                <button
+                                    onClick={() => handleCorruptionClick(report.id)}
+                                    className="card-button">
+                                    Review Report
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            : <div className="card-container"><p>All added Corruption Reports will show up here.</p></div>
+            }
+
 
             {/* Corruption Reports editing modal */}
             <Modal show={showCorruptionModal} handleClose={handleCloseCorruptionModal}>
@@ -243,34 +247,39 @@ export default function AdminDashboard() {
             </Modal>
 
             <h2 className="section-header">All Public Petitions</h2>
-            <div className="card-container">
-                {publicPetitions.map((report, index) => (
-                    <div className="card" key={index}>
-                        <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
-                        <div className="card-content">
-                            <small className={`${report.status === 'Pending' ? 'status-pending' :
-                                    report.status === 'Resolved' ? 'status-resolved' :
-                                        report.status === 'Rejected' ? 'status-rejected' : 'report-status'
-                                }`}> {report.status} </small>
-							<h3 className="card-title">Title: {report.title}</h3>
-							<h4 className="card-location">
-                                <b>Occurred At:</b> {report.govt_agency}, {report.county}
-							</h4>
-							<p className="card-id">ID: {report.id}</p>
-                            <p className="card-description"><b>Description:</b> {report.description}</p>
-                            {report.admin_comments ?
-                                <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
-                            : null
-                            }                            
-                            <button
-                                onClick={() => handlePetitionClick(report.id)}
-                                className="card-button">
-                                Review Report
-                            </button>
+
+            {publicPetitions.length !== 0 ?
+                <div className="card-container">
+                    {publicPetitions.map((report, index) => (
+                        <div className="card" key={index}>
+                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                            <div className="card-content">
+                                <small className={`${report.status === 'Pending' ? 'status-pending' :
+                                        report.status === 'Resolved' ? 'status-resolved' :
+                                            report.status === 'Rejected' ? 'status-rejected' : 'report-status'
+                                    }`}> {report.status} </small>
+                                <h3 className="card-title">Title: {report.title}</h3>
+                                <h4 className="card-location">
+                                    <b>Occurred At:</b> {report.govt_agency}, {report.county}
+                                </h4>
+                                <p className="card-id">ID: {report.id}</p>
+                                <p className="card-description"><b>Description:</b> {report.description}</p>
+                                {report.admin_comments ?
+                                    <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
+                                : null
+                                }                            
+                                <button
+                                    onClick={() => handlePetitionClick(report.id)}
+                                    className="card-button">
+                                    Review Report
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            : <div className="card-container"><p>All added Public Petitions will show up here.</p></div>
+            }
+
 
             {/* Petition Reports editing modal */}
             <Modal show={showPetitionModal} handleClose={handleClosePetitionModal}>
