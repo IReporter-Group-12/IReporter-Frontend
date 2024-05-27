@@ -17,19 +17,19 @@ export default function UserDashboard() {
     const [publicPetitions, setPublicPetitions] = useState([])
 
     const [corruptionForm, setCorruptionForm] = useState({
-		"govt_agency": "",
-		"county": "",
-		"latitude": 0,
-		"longitude": 0,
-		"description": "",
+		"govt_agency": null,
+		"county": null,
+		"latitude": null,
+		"longitude": null,
+		"description": null,
 		"media": [],
 	});
     const [petitionForm, setPetitionForm] = useState({
-        "govt_agency": "",
-        "county": "",
-        "latitude": 0,
-        "longitude": 0,
-        "description": "",
+        "govt_agency": null,
+        "county": null,
+        "latitude": null,
+        "longitude": null,
+        "description": null,
         "media": [],
     });
 
@@ -39,11 +39,11 @@ export default function UserDashboard() {
 	const handleCloseCorruptionModal = () => {
         setShowCorruptionModal(false);
         setCorruptionForm({
-            "govt_agency": "",
-            "county": "",
-            "latitude": 0,
-            "longitude": 0,
-            "description": "",
+            "govt_agency": null,
+            "county": null,
+            "latitude": null,
+            "longitude": null,
+            "description": null,
             "media": [],
         })
     }
@@ -52,11 +52,11 @@ export default function UserDashboard() {
     const handleClosePetitionModal = () => {
         setShowPetitionModal(false);
         setPetitionForm({
-            "govt_agency": "",
-            "county": "",
-            "latitude": 0,
-            "longitude": 0,
-            "description": "",
+            "govt_agency": null,
+            "county": null,
+            "latitude": null,
+            "longitude": null,
+            "description": null,
             "media": [],
         })
     }
@@ -201,45 +201,50 @@ export default function UserDashboard() {
             <h1 className="welcome-message">Welcome To Your Dashboard, {username}</h1>
 
 			<h2 className="section-header">Your Corruption Reports</h2>
-			<div className="card-container">
-				{corruptionReports.map((report, index) => (
-					<div className="card" key={index}>
-						<img
-							src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
-							alt="Corruption Image"
-							className="card-image"
-						/>
-						<div className="card-content">
-							<small
-								className={`${
-									report.status === "Pending"
-										? "status-pending"
-										: report.status === "Resolved"
-										? "status-resolved"
-										: report.status === "Rejected"
-										? "status-rejected"
-										: "report-status"
-								}`}>
-								{" "}
-								{report.status}{" "}
-							</small>
-							<h3 className="card-title">{report.title}</h3>
-							<h4 className="card-location">
-								{report.govt_agency}, {report.county}
-							</h4>
-							<p className="card-id">ID: {report.id}</p>
-							<p className="card-description">
-								{report.description}
-							</p>
-							<button
-								onClick={()=>handleCorruptionClick(report.id, report.status)}
-								className="card-button">
-								Edit Report
-							</button>
-						</div>
-					</div>
-				))}
-			</div>
+            {corruptionReports.length !== 0? 
+                <div className="card-container">
+                    {corruptionReports.map((report, index) => (
+                        <div className="card" key={index}>
+                            <img
+                                src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
+                                alt="Corruption Image"
+                                className="card-image"
+                            />
+                            <div className="card-content">
+                                <small
+                                    className={`${
+                                        report.status === "Pending"
+                                            ? "status-pending"
+                                            : report.status === "Resolved"
+                                            ? "status-resolved"
+                                            : report.status === "Rejected"
+                                            ? "status-rejected"
+                                            : "report-status"
+                                    }`}>
+                                    {" "}
+                                    {report.status}{" "}
+                                </small>
+                                <h3 className="card-title">Title: {report.title}</h3>
+                                <h4 className="card-location">
+                                    <b>Occurred At:</b> {report.govt_agency}, {report.county}
+                                </h4>
+                                <p className="card-id">ID: {report.id}</p>
+                                <p className="card-description"><b>Description:</b> {report.description}</p>
+                                {report.admin_comments ?
+                                    <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
+                                : null
+                                }
+                                <button
+                                    onClick={()=>handleCorruptionClick(report.id, report.status)}
+                                    className="card-button">
+                                    Edit Report
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+              : <div className="card-container"><p>Corruption Reports you add will show up here.</p></div>
+              }
 
             {/* Corruption Reports editing modal */}
 			<Modal
@@ -249,7 +254,7 @@ export default function UserDashboard() {
                     name="edit-corruption"
 					onSubmit={(e) => handleCorruptionSubmit(e)}>
 					<h2>Edit Corruption Report</h2>
-                    <h4>You may add any updates to your report in this form</h4>
+                    <h3>You may add any updates to your report in this form</h3>
 
                     <label htmlFor="user_id">User ID:</label>
                     <input type="text" id="user_id" name="user_id" value={user_id}  disabled={true} /> <br />
@@ -261,7 +266,16 @@ export default function UserDashboard() {
                     <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                     
                     <label htmlFor="govt_agency">Government Agency:</label>
-                    <input type="text" id="govt_aency"  name="govt_agency" onChange={handleCorruptionChange} /> <br />
+                    <select id="govt_agency" name="govt_agency" onChange={handleCorruptionChange}>
+                    <option >Select Agency</option>
+                      <option value="Ministry of Health">Ministry of Health</option>
+                      <option value="Kenya Ports Authority">Kenya Ports Authority</option>
+                      <option value="Judicial Service Commision">Judicial Service Commision</option>
+                      <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
+                      <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
+                      <option value="KEBS">KEBS</option>
+                      <option value="NHIF">NHIF</option>
+                    </select>
                     
                     <label htmlFor="county">County:</label>
                     <input type="text" id="county" name="county" onChange={handleCorruptionChange} /> <br />
@@ -276,50 +290,58 @@ export default function UserDashboard() {
                     <textarea type="textarea" id="description" name="description" form="edit-corruption" onChange={handleCorruptionChange} maxLength={200} rows={4} cols={30} /> <br />
                     
                     <label htmlFor="media">Media:</label>
-                    <input type="file" id="media" name="media" multiple /> <br />
-					<button type="submit" >Submit</button>
+                    <input type="file" id="media" name="media" accept="image/*,video/*" multiple /> <br />
+
+					<button type="submit" className="modal-button" >Submit</button>
 				</form>
 			</Modal>
 
+
 			<h2 className="section-header">Your Public Petitions</h2>
-			<div className="card-container">
-				{publicPetitions.map((report, index) => (
-					<div className="card" key={index}>
-						<img
-							src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
-							alt="Corruption Image"
-							className="card-image"
-						/>
-						<div className="card-content">
-							<small
-								className={`${
-									report.status === "Pending"
-										? "status-pending"
-										: report.status === "Resolved"
-										? "status-resolved"
-										: report.status === "Rejected"
-										? "status-rejected"
-										: "report-status"
-								}`}>
-								{" "}
-								{report.status}{" "}
-							</small>
-							<h3 className="card-title">{report.title}</h3>
-							<h4 className="card-location">
-								{report.govt_agency}, {report.county}
-							</h4>
-							<p className="card-id">ID: {report.id}</p>
-							<p className="card-description">
-								{report.description}
-							</p>
-							<button
-								onClick={() => handlePetitionClick(report.id, report.status)}
-								className="card-button">
-								Edit Report
-							</button>
-						</div>
-					</div>
-				))}
+            {publicPetitions.length !== 0 ?
+                <div className="card-container">
+                    {publicPetitions.map((report, index) => (
+                        <div className="card" key={index}>
+                            <img
+                                src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
+                                alt="Corruption Image"
+                                className="card-image"
+                            />
+                            <div className="card-content">
+                                <small
+                                    className={`${
+                                        report.status === "Pending"
+                                            ? "status-pending"
+                                            : report.status === "Resolved"
+                                            ? "status-resolved"
+                                            : report.status === "Rejected"
+                                            ? "status-rejected"
+                                            : "report-status"
+                                    }`}>
+                                    {" "}
+                                    {report.status}{" "}
+                                </small>
+                                <h3 className="card-title">Title: {report.title}</h3>
+                                <h4 className="card-location">
+                                    <b>Occurred At:</b> {report.govt_agency}, {report.county}
+                                </h4>
+                                <p className="card-id">ID: {report.id}</p>
+                                <p className="card-description"><b>Description:</b> {report.description}</p>
+                                {report.admin_comments ?
+                                    <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
+                                    : null
+                                }
+                                <button
+                                    onClick={() => handlePetitionClick(report.id, report.status)}
+                                    className="card-button">
+                                    Edit Report
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+              : <div className="card-container"><p>Public Petitions you add will show up here.</p></div>
+            }
 
                 {/* public petitions editing modal */}
 				<Modal
@@ -329,7 +351,7 @@ export default function UserDashboard() {
                         name="edit-petition"
 						onSubmit={(e) => handlePetitionSubmit(e)}>
 						<h2>Edit Public Petition</h2>
-                        <h4>You may add any updates to your report in this form</h4>
+                        <h3>You may add any updates to your report in this form</h3>
 
                         <label htmlFor="user_id">User ID:</label>
                         <input type="text" id="user_id" name="user_id" value={user_id} disabled={true} /> <br />
@@ -341,7 +363,16 @@ export default function UserDashboard() {
                         <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
                         
                         <label htmlFor="govt_agency">Government Agency:</label>
-                        <input type="text" id="govt_agency" name="govt_agency"  onChange={handlePetitionChange} /> <br />
+                        <select id="govt_agency" name="govt_agency" onChange={handlePetitionChange}>
+                            <option >Select Agency</option>
+                            <option value="Ministry of Health">Ministry of Health</option>
+                            <option value="Kenya Ports Authority">Kenya Ports Authority</option>
+                            <option value="Judicial Service Commision">Judicial Service Commision</option>
+                            <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
+                            <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
+                            <option value="KEBS">KEBS</option>
+                            <option value="NHIF">NHIF</option>
+                        </select>
                         
                         <label htmlFor="county">County:</label>
                         <input type="text" id="county" name="county" onChange={handlePetitionChange} /> <br />
@@ -356,12 +387,11 @@ export default function UserDashboard() {
                         <textarea type="text" id="description" name="description" form="edit-petition" onChange={handlePetitionChange} maxLength={200} rows={4} cols={30} /> <br />
                         
                         <label htmlFor="media">Media:</label>
-                        <input type="file" id="media" name="media" multiple /> <br />
+                        <input type="file" id="media" name="media" accept="image/*,video/*" multiple /> <br />
 
-                        <button type="submit">Submit</button>
+                        <button type="submit" className="modal-button">Submit</button>
 					</form>
 				</Modal>
-			</div>
 		</>
   );
 }

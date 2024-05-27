@@ -15,10 +15,16 @@ const Categories = () => {
   const handleIconClick = (e, categoryLabel) => {
     e.preventDefault(); // Prevent the default behavior of the link
     // Navigate to specific paths based on the category label
-    if (categoryLabel === "Report a corruption" ) {
-      navigate("/corruption-form"); // Navigate to the corruption report form
-    } else if (categoryLabel === "Public Petition") {
+
+	
+    if (categoryLabel === "Report a corruption" && loggedIn === "true") {
+      navigate("/corruption-form") 
+    } else if (categoryLabel === "Report a corruption" && loggedIn === "false") {
+      navigate("/login") 
+    } else if (categoryLabel === "Public Petition" && loggedIn === "true") {
       navigate("/public-petition"); // Navigate to the public petition page
+    } else if (categoryLabel === "Public Petition" && loggedIn === "false") {
+      navigate("/login"); // Navigate to the public petition page
     }
   };
 

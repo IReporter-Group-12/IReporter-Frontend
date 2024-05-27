@@ -15,13 +15,13 @@ export default function AdminDashboard() {
     const current_report = localStorage.getItem("report_id");
 
     const [corruptionForm, setCorruptionForm] = useState({
-        status: "",
-        admin_comments: ""
+        status: null,
+        admin_comments: null
     });
 
     const [petitionForm, setPetitionForm] = useState({
-        status: "",
-        admin_comments: ""
+        status: null,
+        admin_comments: null
     });
 
     // Managing modal visibility state
@@ -30,8 +30,8 @@ export default function AdminDashboard() {
     const handleCloseCorruptionModal = () => {
         setShowCorruptionModal(false);
         setCorruptionForm({
-            status: "",
-            admin_comments: ""
+            status: null,
+            admin_comments: null
         });
     };
 
@@ -40,8 +40,8 @@ export default function AdminDashboard() {
     const handleClosePetitionModal = () => {
         setShowPetitionModal(false);
         setPetitionForm({
-            status: "",
-            admin_comments: ""
+            status: null,
+            admin_comments: null
         });
     };
 
@@ -161,9 +161,9 @@ export default function AdminDashboard() {
         <>
             <Slide />
 
-            <h2 className="section-header">All Corruption Reports</h2>
             <h1 className="welcome-message">Welcome To The Admin Dashboard!</h1>
 
+            <h2 className="section-header">All Corruption Reports</h2>
             <div className="card-container">
                 {corruptionReports.map((report, index) => (
                     <div className="card" key={index}>
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
                             <button
                                 onClick={() => handleCorruptionClick(report.id)}
                                 className="card-button">
-                                Edit Report
+                                Review Report
                             </button>
                         </div>
                     </div>
@@ -193,10 +193,10 @@ export default function AdminDashboard() {
             <Modal show={showCorruptionModal} handleClose={handleCloseCorruptionModal}>
                 <form name="edit-corruption" onSubmit={handleCorruptionSubmit}>
                     <h2>Review Corruption Report</h2>
-                    <h4>You may change the status and add additional comments.</h4>
+                    <h3>You may change the status and add additional comments.</h3>
 
                     <div>
-                        <h5>Change Report Status:</h5>
+                        <h4><b>Change Report Status:</b></h4>
                         <input
                             type="radio"
                             id="underReview"
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
                         <label htmlFor="rejected">Rejected</label>
                     </div>
 
-                    <label htmlFor="admin_comments">Admin Comments:</label>
+                    <label htmlFor="admin_comments"><b>Admin Comments:</b></label>
                     <textarea
                         id="admin_comments"
                         name="admin_comments"
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
                     />
                     <br />
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" className="modal-button">Submit</button>
                 </form>
             </Modal>
 
@@ -252,14 +252,20 @@ export default function AdminDashboard() {
                                     report.status === 'Resolved' ? 'status-resolved' :
                                         report.status === 'Rejected' ? 'status-rejected' : 'report-status'
                                 }`}> {report.status} </small>
-                            <h3 className="card-title">{report.title}</h3>
-                            <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
-                            <p className="card-id">ID: {report.id}</p>
-                            <p className="card-description">{report.description}</p>
+							<h3 className="card-title">Title: {report.title}</h3>
+							<h4 className="card-location">
+                                <b>Occurred At:</b> {report.govt_agency}, {report.county}
+							</h4>
+							<p className="card-id">ID: {report.id}</p>
+                            <p className="card-description"><b>Description:</b> {report.description}</p>
+                            {report.admin_comments ?
+                                <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
+                            : null
+                            }                            
                             <button
                                 onClick={() => handlePetitionClick(report.id)}
                                 className="card-button">
-                                Edit Report
+                                Review Report
                             </button>
                         </div>
                     </div>
@@ -315,7 +321,7 @@ export default function AdminDashboard() {
                     />
                     <br />
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" className="modal-button">Submit</button>
                 </form>
             </Modal>
         </>

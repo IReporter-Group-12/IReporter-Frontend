@@ -17,14 +17,49 @@
   display: block;
 }
 
+.modal input[type="text"],input[type="email"],input[type="file"], select,
+.modal textarea {
+  display: block;
+  width: 100%;
+  padding: 0.3rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.modal input[type="radio"] {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
 .modal-content {
   background-color: #fefefe;
   margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
+  border-radius: 3ch;
   width: 80%;
   max-width: 500px;
 }
+
+.modal-button {
+    background-color: #0066ff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-button:hover {
+    background-color: #0056b3;
+}
+
 
 .close {
   color: #aaa;

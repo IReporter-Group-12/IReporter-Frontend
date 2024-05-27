@@ -33,7 +33,7 @@ const Navbar = () => {
 
 
   const loggedIn = localStorage.getItem("logged_in")
-console.log(loggedIn)
+  const role = localStorage.getItem('role')
 
   return (
 		<div className="navbar">
@@ -42,12 +42,12 @@ console.log(loggedIn)
 				<img
 					src="/assets/logo.png"
 					alt="representation of the company or the government"
-				/>
+					/>
 			</a>
-
-			{/* <Link to="/user-dashboard" className="nav-button">User Dashboard</Link>
-			<Link to="/admin-dashboard" className="nav-button">Admin Dashboard</Link> */}
-
+			<h3>IReporter</h3>
+			{loggedIn==="true" && role==="admin" ? <Link to="/admin-dashboard" className="nav-button">Admin Dashboard</Link> :
+			loggedIn === "true" && role ==="user" ? <Link to="/user-dashboard" className="nav-button">Your Dashboard</Link>: null}
+ 
 			{/* Search bar section */}
 			<div className="navbar_search">
 				<input
@@ -90,7 +90,7 @@ console.log(loggedIn)
 				</button>
 
 				{/* Dropdown menu for unauthenticated users */}
-				{dropdownMenu && loggedIn && (
+				{dropdownMenu && loggedIn==="false" && (
 					<div className="navbar_right_accountmenu">
 						<Link to="/login">Log In</Link>
 						<Link to="/admin-register">Government Admin</Link>
@@ -98,7 +98,7 @@ console.log(loggedIn)
 				)}
 
 				{/* Dropdown menu for authenticated users */}
-				{dropdownMenu && !loggedIn && (
+				{dropdownMenu && loggedIn==="true" && (
 					<div className="navbar_right_accountmenu">
 						<Link
 							to="/login"
@@ -117,6 +117,7 @@ console.log(loggedIn)
 								localStorage.setItem("report_id", null)
 
 								alert("You have been logged out successfully!")
+								
 								}
 							}
 							}>

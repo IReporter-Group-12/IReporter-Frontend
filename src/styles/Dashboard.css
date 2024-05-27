@@ -66,11 +66,11 @@
 }
 
 .report-status {
-  color: rgb(255, 115, 0); /* Default color */
+  color: rgb(233, 154, 37); /* Default color */
 }
 
 .status-pending {
-  color: rgb(255, 115, 0);
+  color: rgb(233, 154, 37);
 }
 
 .status-resolved {
@@ -78,7 +78,7 @@
 }
 
 .status-rejected {
-  color: red;
+  color: rgb(255, 0, 0);
 }
 
 .card-button {

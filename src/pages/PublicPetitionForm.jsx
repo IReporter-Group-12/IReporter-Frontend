@@ -1,35 +1,21 @@
-// Import necessary components and dependencies
-import Footer from "../components/Footer"; // Footer component
-import { categories, types } from "../data"; // Import categories and types data
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // For drag-and-drop functionality
 import { useState } from "react"; // useState hook from React
 import { BiTrash } from "react-icons/bi"; // Trash icon from react-icons
 import { useSelector } from "react-redux"; // useSelector hook from Redux
 import { useNavigate } from "react-router-dom"; // useNavigate from react-router-dom for navigation
 import "../styles/PublicPetition.css"; // CSS for styling the form
 import "../styles/breakpoints.css"; // CSS for responsive design
-import variables from "../styles/variables.css"; // CSS variables
+
 
 // Define the PublicPetitionForm component
 const PublicPetitionForm = () => {
-  // Get user data from the Redux store
-  const user = useSelector((state) => state.user) || {};
-  
+
   // State to store user's location
   const [userLocation, setUserLocation] = useState(null);
-
-  // State to store user data
-  const [userData, setUserData] = useState({
-    user_id: user.user_id || "",
-    fullName: user.fullName || "",
-    email: user.email || "",
-  });
 
   // State to store incident location data
   const [incidentLocation, setIncidentLocation] = useState({
     governmentAgency: "",
     county: "",
-    additionalInfo: "",
     latitude: "",
     longitude: "",
   });
@@ -40,12 +26,6 @@ const PublicPetitionForm = () => {
     description: "",
     media: [],
   });
-
-  // Handle changes to user data inputs
-  const handleUserDataChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
 
   // Handle changes to incident location inputs
   const handleLocationChange = (e) => {
@@ -68,17 +48,6 @@ const PublicPetitionForm = () => {
     }));
   };
 
-  // Handle reordering of media items via drag-and-drop
-  const handleMediaDrag = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(incidentData.media);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setIncidentData({ ...incidentData, media: items });
-  };
-
   // Handle removal of media items
   const handleMediaRemove = (indexToRemove) => {
     setIncidentData((prevData) => ({
@@ -93,48 +62,45 @@ const PublicPetitionForm = () => {
   // Handle form submission
   const handlePost = async (e) => {
     e.preventDefault();
-  
+
     try {
       // Collect the necessary data
       const data = {
-        user_id: userData.user_id,
-        fullName: userData.fullName,
-        email: userData.email,
-        govt_agency: incidentLocation.govtAgency || "Unknown Agency", // Provide a fallback value
+        user_id: localStorage.getItem("user_id"),
+        govt_agency: incidentLocation.governmentAgency || "Unknown Agency", // Provide a fallback value
         county: incidentLocation.county,
-        additionalInfo: incidentLocation.additionalInfo,
-        latitude: incidentLocation.latitude || null,
-        longitude: incidentLocation.longitude || null,
         title: incidentData.title,
         description: incidentData.description,
+        latitude: incidentLocation.latitude || 0,
+        longitude: incidentLocation.longitude || 0,
         media: [], // Placeholder for media URLs
       };
-  
+
       console.log("Data to be sent:", data); // Log data to be sent
-  
+
       // Upload each media file and collect the URLs
       const mediaUrls = await Promise.all(incidentData.media.map(async (media) => {
         const mediaForm = new FormData();
         mediaForm.append("file", media);
-  
-        const uploadResponse = await fetch("http://127.0.0.1:5000/upload_resolution", {
+
+        const uploadResponse = await fetch("http://127.0.0.1:5000/upload_petition", {
           method: "POST",
           body: mediaForm,
         });
-  
+
         if (!uploadResponse.ok) {
           throw new Error("Media upload failed");
         }
-  
+
         const uploadResult = await uploadResponse.json();
         return uploadResult.url;
       }));
-  
+
       // Add media URLs to data object
       data.media = mediaUrls;
-  
+
       console.log("Final data to be sent:", data); // Log final data to be sent
-  
+
       // Send a POST request to create a new report
       const response = await fetch("http://127.0.0.1:5000/public_petitions", {
         method: "POST",
@@ -143,21 +109,21 @@ const PublicPetitionForm = () => {
         },
         body: JSON.stringify(data),
       });
-  
+
       if (response.ok) {
         // Show a success message to the user
         alert("Report submitted successfully!");
         // Navigate to the home page upon successful submission
-        navigate("/");
+        navigate("/user-dashboard");
       } else {
         const errorText = await response.text();
-        console.log("Report submission failed", errorText);
+        alert(`Report submission failed: ${errorText}.\nPlease try again later.`);
       }
     } catch (err) {
-      console.log("Report submission failed", err.message);
+      alert(`Report submission failed: ${err.message}.\nPlease try again later.`);
     }
   };
-  
+
   // Function to get the user's current location
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -183,31 +149,28 @@ const PublicPetitionForm = () => {
         <form onSubmit={handlePost}>
           <div className="create-report_step1">
             <h2>Step 1: User Data</h2>
-            <hr/>
+            <hr />
             <div className="user-data">
               <p>ID/Passport No.</p>
               <input
                 type="text"
                 name="user_id"
-                value={userData.user_id}
-                onChange={handleUserDataChange}
-                required
-              />                    
+                value={localStorage.getItem("user_id")}
+                disabled={true}
+              />
               <p>Full Name</p>
               <input
                 type="text"
                 name="fullName"
-                value={userData.fullName}
-                onChange={handleUserDataChange}
-                required
+                value={localStorage.getItem("username")}
+                disabled={true}
               />
               <p>Email</p>
               <input
                 type="email"
                 name="email"
-                value={userData.email}
-                onChange={handleUserDataChange}
-                required
+                value={localStorage.getItem("email")}
+                disabled={true}
               />
             </div>
           </div>
@@ -226,12 +189,13 @@ const PublicPetitionForm = () => {
                 {/* Replace with dynamic options */}
                 <option value="">Select Agency</option>
                 {/* Example agencies */}
-                <option value="Agency1">Ministry of Health</option>
-                <option value="Agency2">Kenya Ports Authority</option>
-                <option value="Agency2">Judicial Service Commision</option>
-                <option value="Agency2">Kenya Wildlife Service</option>
-                <option value="Agency2">Kenya Bureau of Standards</option>
-                <option value="Agency2">KEBS</option>
+                <option value="Ministry of Health">Ministry of Health</option>
+                <option value="Kenya Ports Authority">Kenya Ports Authority</option>
+                <option value="Judicial Service Commision">Judicial Service Commision</option>
+                <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
+                <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
+                <option value="KEBS">KEBS</option>
+                <option value="NHIF">NHIF</option>
               </select>
               <p>Which county does the petition you wish to submit pertain to?</p>
               <input
@@ -240,13 +204,6 @@ const PublicPetitionForm = () => {
                 value={incidentLocation.county}
                 onChange={handleLocationChange}
                 required
-              />
-              <p>Additional location info (optional)</p>
-              <input
-                type="text"
-                name="additionalInfo"
-                value={incidentLocation.additionalInfo}
-                onChange={handleLocationChange}
               />
               <p>Latitude</p>
               <input
@@ -295,55 +252,20 @@ const PublicPetitionForm = () => {
                 required
               />
               <div className="media-previews">
-                <DragDropContext onDragEnd={handleMediaDrag}>
-                  <Droppable droppableId="media" direction="vertical">
-                    {(provided) => (
-                      <div
-                        className="media"
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        {incidentData.media.map((file, index) => (
-                          <Draggable
-                            key={file.name}
-                            draggableId={file.name}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                className="media-item"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                {file.type.startsWith("image/") ? (
-                                  <img
-                                    src={URL.createObjectURL(file)}
-                                    alt={`Preview ${index}`}
-                                  />
-                                ) : (
-                                  <video controls>
-                                    <source
-                                      src={URL.createObjectURL(file)}
-                                      type={file.type}
-                                    />
-                                  </video>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() => handleMediaRemove(index)}
-                                >
-                                  <BiTrash />
-                                </button>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
+                {incidentData.media.map((file, index) => (
+                  <div key={file.name} className="media-item">
+                    {file.type.startsWith("image/") ? (
+                      <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} />
+                    ) : (
+                      <video controls>
+                        <source src={URL.createObjectURL(file)} type={file.type} />
+                      </video>
                     )}
-                  </Droppable>
-                </DragDropContext>
+                    <button type="button" onClick={() => handleMediaRemove(index)}>
+                      <BiTrash />
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

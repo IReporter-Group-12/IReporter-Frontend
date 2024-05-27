@@ -60,7 +60,12 @@ const LoginPage = () => {
 				localStorage.setItem("logged_in", true)
 				// Navigating to the home page after successful login
 				alert("Login Successful!");
-				navigate("/user-dashboard");
+				if (data.role === "admin"){
+					navigate("/admin-dashboard");
+				}
+				else{
+					navigate("/user-dashboard")
+				}
 			} else {
 				alert(`Login failed: ${data.error || "Unknown error"}`);
 			}
@@ -72,6 +77,7 @@ const LoginPage = () => {
 
 	return (
 		<div className="login">
+			<h1 style={{color : "white"}}>LOG IN</h1>
 			<div className="login_content">
 				{/* Form for user login */}
 				<form className="login_content_form" onSubmit={handleSubmit}>
@@ -105,7 +111,7 @@ const LoginPage = () => {
 					<button type="submit">LOG IN</button>
 				</form>
 				{/* Link to the registration page */}
-				<a href="/register">Don't have an account? Sign In Here</a>
+				<a href="/user-register">Don't have an account? Sign In Here</a>
 			</div>
 		</div>
 	);

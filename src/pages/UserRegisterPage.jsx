@@ -10,7 +10,6 @@ const UserRegisterPage = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    id_passport_no: "",
     password: "",
     confirmPassword: "",
     profileImage: null, // Profile image file
@@ -21,7 +20,7 @@ const UserRegisterPage = () => {
     const { name, value, files } = e.target; // Get name, value, and files from the event target
     setFormData({
       ...formData,
-      [name]: name === "profileImage" ? files[0] : value, // If the input is for profileImage, set it as the file, otherwise set the value
+      [name]: value, // If the input is for profileImage, set it as the file, otherwise set the value
     });
   };
 
@@ -72,20 +71,14 @@ const UserRegisterPage = () => {
   // Render the registration form
   return (
 		<div className="register">
+		  <h1 style={{ color: "white" }}>SIGN UP</h1>
+
 			<div className="register_content">
 				<form className="register_content_form" onSubmit={handleSubmit}>
 					<input
 						placeholder="Full Name"
 						name="fullName"
 						value={formData.fullName}
-						onChange={handleChange}
-						required
-					/>
-					<input
-						placeholder="ID/Passport Number"
-						type="number"
-						name="id_passport_no"
-						value={formData.id_passport_no}
 						onChange={handleChange}
 						required
 					/>
@@ -127,26 +120,6 @@ const UserRegisterPage = () => {
 						<p style={{ color: "red" }}>
 							Passwords are not matched!
 						</p>
-					)}
-					<input
-						id="image"
-						type="file"
-						name="profileImage"
-						accept="image/*"
-						style={{ display: "none" }}
-						onChange={handleChange}
-					/>
-					<label htmlFor="image">
-						<img src="/assets/addImage.png" alt="Upload option" />
-						<p>Upload Your Photo</p>
-					</label>
-					{/* Show a preview of the uploaded image */}
-					{formData.profileImage && (
-						<img
-							src={URL.createObjectURL(formData.profileImage)}
-							alt="Profile preview"
-							style={{ maxWidth: "80px" }}
-						/>
 					)}
 					<button type="submit" disabled={!passwordMatch}>
 						REGISTER
