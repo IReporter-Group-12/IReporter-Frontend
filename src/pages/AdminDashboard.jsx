@@ -178,7 +178,10 @@ export default function AdminDashboard() {
                                 <h4 className="card-location">{report.govt_agency}, {report.county}</h4>
                                 <p className="card-id">ID: {report.id}</p>
                                 <p className="card-description">{report.description}</p>
-                                <p className="card-admin comments">{report.admin_comments}</p>
+                                {report.admin_comments ?
+                                    <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
+                                    : null
+                                }
 
                                 <button
                                     onClick={() => handleCorruptionClick(report.id)}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Slide from "../components/Slide";
 import Modal from "../components/Modal";
-import Categories from "../components/Categories";
 import "../styles/Dashboard.css"
 
 
@@ -18,64 +17,92 @@ export default function UserDashboard() {
     const [publicPetitions, setPublicPetitions] = useState([])
 
     const [corruptionForm, setCorruptionForm] = useState({
-		"govt_agency": null,
-		"county": null,
-		"latitude": null,
-		"longitude": null,
-		"description": null,
+        "title" : '',
+		"govt_agency": '',
+		"county": '',
+		"latitude": '',
+		"longitude": '',
+		"description": '',
 		"media": [],
 	});
     const [petitionForm, setPetitionForm] = useState({
-        "govt_agency": null,
-        "county": null,
-        "latitude": null,
-        "longitude": null,
-        "description": null,
+        "title": '',
+        "govt_agency": '',
+        "county": '',
+        "latitude": '',
+        "longitude": '',
+        "description": '',
         "media": [],
     });
 
-
     const [showCorruptionModal, setShowCorruptionModal] = useState(false);
+
 	const handleOpenCorruptionModal = () => setShowCorruptionModal(true);
+
 	const handleCloseCorruptionModal = () => {
         setShowCorruptionModal(false);
         setCorruptionForm({
-            "govt_agency": null,
-            "county": null,
-            "latitude": null,
-            "longitude": null,
-            "description": null,
+            "title": '',
+            "govt_agency": '',
+            "county": '',
+            "latitude": '',
+            "longitude": '',
+            "description": '',
             "media": [],
         })
     }
+
     const [showPetitionModal, setShowPetitionModal] = useState(false);
+
     const handleOpenPetitionModal = () => setShowPetitionModal(true);
+
     const handleClosePetitionModal = () => {
         setShowPetitionModal(false);
         setPetitionForm({
-            "govt_agency": null,
-            "county": null,
-            "latitude": null,
-            "longitude": null,
-            "description": null,
+            "title": '',
+            "govt_agency": '',
+            "county": '',
+            "latitude": '',
+            "longitude": '',
+            "description": '',
             "media": [],
         })
     }
 
 
-    const handleCorruptionClick = (id, status) => {
+    const handleCorruptionClick = (id, status, index) => {
         if (status !== "Pending") {
             alert("Sorry, you cannot edit your report after it has been reviewed.")
         } else {
             localStorage.setItem("report_id", id)
+            const report = corruptionReports[index];
+            setCorruptionForm({
+                title: report.title,
+                govt_agency: report.govt_agency,
+                county: report.county,
+                latitude: report.latitude,
+                longitude: report.longitude,
+                description: report.description,
+                media: report.media || [],
+            });
             handleOpenCorruptionModal()
         }
     }
-    const handlePetitionClick = (id, status) => {
+    const handlePetitionClick = (id, status, index) => {
 		if (status !== "Pending") {
 			alert("Sorry, you cannot edit your report after it has been reviewed.");
 		} else {
 			localStorage.setItem("report_id", id);
+            const petition = publicPetitions[index];
+            setPetitionForm({
+                title: petition.title,
+                govt_agency: petition.govt_agency,
+                county: petition.county,
+                latitude: petition.latitude,
+                longitude: petition.longitude,
+                description: petition.description,
+                media: petition.media || [],
+            });
 			handleOpenPetitionModal();
 		}
 	};
@@ -91,7 +118,7 @@ export default function UserDashboard() {
             ...corruptionForm,
             [fieldName]: value
         })
-        // console.log(corruptionForm)
+        // console.log("Updating Corruption Form", corruptionForm)
     }
     const handlePetitionChange = (e) => {
         // Setting the variables to the field form attributes
@@ -103,14 +130,14 @@ export default function UserDashboard() {
             ...petitionForm,
             [fieldName]: value
         })
-        // console.log(petitionForm)
+        // console.log("Updating Petition Form", petitionForm)
     }
 
 
     const handleCorruptionSubmit = async (e) => {
 
         e.preventDefault();
-        // console.log(corruptionForm)
+        console.log("Final Corruption Form", corruptionForm)
         
         try {
             const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${current_report}`, {
@@ -125,6 +152,12 @@ export default function UserDashboard() {
             
             if (res.ok){
                 alert("Successfully updated report!");
+                // const updatedReports = corruptionReports.map((report) =>
+                //     report.id === current_report ? { ...report, ...corruptionForm } : report
+                // );
+                // setCorruptionReports(updatedReports);
+
+
                 handleCloseCorruptionModal();
                 window.location.reload()
             } else{
@@ -138,7 +171,7 @@ export default function UserDashboard() {
     const handlePetitionSubmit = async (e) => {
 
         e.preventDefault();
-        // console.log(petitionForm)
+        console.log("Final Petition Form", petitionForm)
         
         try {
             const res = await fetch(`http://127.0.0.1:5000/public_petitions/${current_report}`, {
@@ -146,13 +179,18 @@ export default function UserDashboard() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(corruptionForm)
+                body: JSON.stringify(petitionForm)
             })
 
             const data = await res.json()
 
             if (res.ok) {
-                alert("Successfully updated report!");
+                alert("Successfully updated petition!");
+                // const updatedPetitions = publicPetitions.map((petition) =>
+                //     petition.id === current_report ? { ...petition, ...petitionForm } : petition
+                // );
+                // setPublicPetitions(updatedPetitions)
+
                 handleCloseCorruptionModal();
                 window.location.reload()
             } else {
@@ -173,12 +211,12 @@ export default function UserDashboard() {
 						{method: "GET"}
 					);
 					const data = await res.json();
-					console.log('Corruption Reports: ', data);
+					// console.log('Corruption Reports: ', data);
 					setCorruptionReports(data);
 				} catch (err) {console.error(`Error: ${err.message}`);}
             }
 		},
-		[loggedIn]
+		[loggedIn, user_id]
 	);
     useEffect(
         () => async function () {
@@ -188,14 +226,14 @@ export default function UserDashboard() {
                         {method: "GET"}
                     );
                     const data = await res.json();
-                    console.log('Public Petitions: ', data);
+                    // console.log('Public Petitions: ', data);
                     setPublicPetitions(data);
                 } catch (err) {
                     console.error(`Error: ${err.message}`);
                 }
             }
         },
-        [loggedIn]
+        [loggedIn, user_id]
     );
 
     
@@ -240,7 +278,7 @@ export default function UserDashboard() {
                                 : null
                                 }
                                 <button
-                                    onClick={()=>handleCorruptionClick(report.id, report.status)}
+                                    onClick={()=>handleCorruptionClick(report.id, report.status, index)}
                                     className="card-button">
                                     Edit Report
                                 </button>
@@ -269,30 +307,34 @@ export default function UserDashboard() {
                     
                     <label htmlFor="email">Email:</label>
                     <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
+
+                    <label htmlFor="title">Title:</label>
+                    <input type="text" id="title" name="title" value={corruptionForm.title || ""} disabled={true} /> <br />
+
                     
                     <label htmlFor="govt_agency">Government Agency:</label>
-                    <select id="govt_agency" name="govt_agency" onChange={handleCorruptionChange}>
-                    <option >Select Agency</option>
-                      <option value="Ministry of Health">Ministry of Health</option>
-                      <option value="Kenya Ports Authority">Kenya Ports Authority</option>
-                      <option value="Judicial Service Commision">Judicial Service Commision</option>
-                      <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
-                      <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
-                      <option value="KEBS">KEBS</option>
-                      <option value="NHIF">NHIF</option>
+                    <select id="govt_agency" name="govt_agency" onChange={handleCorruptionChange} value={corruptionForm.govt_agency || ""}>
+                        <option >Select Agency</option>
+                        <option value="Ministry of Health">Ministry of Health</option>
+                        <option value="Kenya Ports Authority">Kenya Ports Authority</option>
+                        <option value="Judicial Service Commision">Judicial Service Commision</option>
+                        <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
+                        <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
+                        <option value="KEBS">KEBS</option>
+                        <option value="NHIF">NHIF</option>
                     </select>
                     
                     <label htmlFor="county">County:</label>
-                    <input type="text" id="county" name="county" onChange={handleCorruptionChange} /> <br />
+                    <input type="text" id="county" name="county" value={corruptionForm.county || ""} onChange={handleCorruptionChange} /> <br />
                                         
                     <label htmlFor="latitude">Latitude:</label>
-                    <input type="text" id="latitude" name="latitude" onChange={handleCorruptionChange} /> <br />
+                    <input type="text" id="latitude" name="latitude" value={corruptionForm.latitude || ""} onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="longitude">Longitude:</label>
-                    <input type="text" id="longitude" name="longitude" onChange={handleCorruptionChange} /> <br />
+                    <input type="text" id="longitude" name="longitude" value={corruptionForm.longitude || ""} onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="description">Description:</label>
-                    <textarea type="textarea" id="description" name="description" form="edit-corruption" onChange={handleCorruptionChange} maxLength={200} rows={4} cols={30} /> <br />
+                    <textarea type="textarea" id="description" name="description" form="edit-corruption" maxLength={200} rows={4} cols={30} value={corruptionForm.description || ""} onChange={handleCorruptionChange} /> <br />
                     
                     <label htmlFor="media">Media:</label>
                     <input type="file" id="media" name="media" accept="image/*,video/*" multiple /> <br />
@@ -337,7 +379,7 @@ export default function UserDashboard() {
                                     : null
                                 }
                                 <button
-                                    onClick={() => handlePetitionClick(report.id, report.status)}
+                                    onClick={() => handlePetitionClick(report.id, report.status, index)}
                                     className="card-button">
                                     Edit Report
                                 </button>
@@ -348,55 +390,58 @@ export default function UserDashboard() {
               : <div className="card-container"><p>Public Petitions you add will show up here.</p></div>
             }
 
-                {/* public petitions editing modal */}
-				<Modal
-					show={showPetitionModal}
-					handleClose={handleClosePetitionModal}>
-					<form
-                        name="edit-petition"
-						onSubmit={(e) => handlePetitionSubmit(e)}>
-						<h2>Edit Public Petition</h2>
-                        <h3>You may add any updates to your report in this form</h3>
+            {/* public petitions editing modal */}
+            <Modal
+                show={showPetitionModal}
+                handleClose={handleClosePetitionModal}>
+                <form
+                    name="edit-petition"
+                    onSubmit={(e) => handlePetitionSubmit(e)}>
+                    <h2>Edit Public Petition</h2>
+                    <h3>You may add any updates to your report in this form</h3>
 
-                        <label htmlFor="user_id">User ID:</label>
-                        <input type="text" id="user_id" name="user_id" value={user_id} disabled={true} /> <br />
-                        
-                        <label htmlFor="username">Username:</label>
-                        <input type="text" id="username" name="username" value={username} disabled={true} /> <br />
-                        
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
-                        
-                        <label htmlFor="govt_agency">Government Agency:</label>
-                        <select id="govt_agency" name="govt_agency" onChange={handlePetitionChange}>
-                            <option >Select Agency</option>
-                            <option value="Ministry of Health">Ministry of Health</option>
-                            <option value="Kenya Ports Authority">Kenya Ports Authority</option>
-                            <option value="Judicial Service Commision">Judicial Service Commision</option>
-                            <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
-                            <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
-                            <option value="KEBS">KEBS</option>
-                            <option value="NHIF">NHIF</option>
-                        </select>
-                        
-                        <label htmlFor="county">County:</label>
-                        <input type="text" id="county" name="county" onChange={handlePetitionChange} /> <br />
-                                                
-                        <label htmlFor="latitude">Latitude:</label>
-                        <input type="text" id="latitude" name="latitude" onChange={handlePetitionChange} /> <br />
-                        
-                        <label htmlFor="longitude">Longitude:</label>
-                        <input type="text" id="longitude" name="longitude" onChange={handlePetitionChange} /> <br />
-                                
-                        <label htmlFor="description">Description:</label>
-                        <textarea type="text" id="description" name="description" form="edit-petition" onChange={handlePetitionChange} maxLength={200} rows={4} cols={30} /> <br />
-                        
-                        <label htmlFor="media">Media:</label>
-                        <input type="file" id="media" name="media" accept="image/*,video/*" multiple /> <br />
+                    <label htmlFor="user_id">User ID:</label>
+                    <input type="text" id="user_id" name="user_id" value={user_id} disabled={true} /> <br />
+                    
+                    <label htmlFor="username">Username:</label>
+                    <input type="text" id="username" name="username" value={username} disabled={true} /> <br />
+                    
+                    <label htmlFor="email">Email:</label>
+                    <input type="email" id="email" name="email" value={email} disabled={true} /> <br />
+                    
+                    <label htmlFor="title">Title:</label>
+                  <input type="text" id="title" name="title" value={petitionForm.title || ""} disabled={true} /> <br />
 
-                        <button type="submit" className="modal-button">Submit</button>
-					</form>
-				</Modal>
+                    <label htmlFor="govt_agency">Government Agency:</label>
+                  <select id="govt_agency" name="govt_agency" onChange={handlePetitionChange} value={petitionForm.govt_agency || ""}>
+                        <option >Select Agency</option>
+                        <option value="Ministry of Health">Ministry of Health</option>
+                        <option value="Kenya Ports Authority">Kenya Ports Authority</option>
+                        <option value="Judicial Service Commision">Judicial Service Commision</option>
+                        <option value="Kenya Wildlife Service">Kenya Wildlife Service</option>
+                        <option value="Kenya Bureau of Standards">Kenya Bureau of Standards</option>
+                        <option value="KEBS">KEBS</option>
+                        <option value="NHIF">NHIF</option>
+                    </select>
+                    
+                    <label htmlFor="county">County:</label>
+                  <input type="text" id="county" name="county" onChange={handlePetitionChange} value={petitionForm.county || ""} /> <br />
+                                            
+                    <label htmlFor="latitude">Latitude:</label>
+                  <input type="text" id="latitude" name="latitude" onChange={handlePetitionChange} value={petitionForm.latitude || ""} /> <br />
+                    
+                    <label htmlFor="longitude">Longitude:</label>
+                  <input type="text" id="longitude" name="longitude" onChange={handlePetitionChange} value={petitionForm.longitude || ""} /> <br />
+                            
+                    <label htmlFor="description">Description:</label>
+                  <textarea type="text" id="description" name="description" form="edit-petition" onChange={handlePetitionChange} maxLength={200} rows={4} cols={30} value={petitionForm.description || ""} /> <br />
+                    
+                    <label htmlFor="media">Media:</label>
+                    <input type="file" id="media" name="media" accept="image/*,video/*" multiple /> <br />
+
+                    <button type="submit" className="modal-button">Submit</button>
+                </form>
+            </Modal>
 		</>
-  );
+    );
 }
