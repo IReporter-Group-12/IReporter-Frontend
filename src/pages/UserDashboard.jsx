@@ -11,7 +11,7 @@ export default function UserDashboard() {
     const user_id = localStorage.getItem("user_id")
     const username = localStorage.getItem("username")
     const email = localStorage.getItem("email")
-    const current_report = localStorage.getItem("report_id")
+    let current_report = null
 
     const [corruptionReports, setCorruptionReports] = useState([])
     const [publicPetitions, setPublicPetitions] = useState([])
@@ -74,7 +74,7 @@ export default function UserDashboard() {
         if (status !== "Pending") {
             alert("Sorry, you cannot edit your report after it has been reviewed.")
         } else {
-            localStorage.setItem("report_id", id)
+            current_report = id
             const report = corruptionReports[index];
             setCorruptionForm({
                 title: report.title,
@@ -92,7 +92,7 @@ export default function UserDashboard() {
 		if (status !== "Pending") {
 			alert("Sorry, you cannot edit your report after it has been reviewed.");
 		} else {
-			localStorage.setItem("report_id", id);
+            current_report = id
             const petition = publicPetitions[index];
             setPetitionForm({
                 title: petition.title,
@@ -202,6 +202,44 @@ export default function UserDashboard() {
         }
     }
 
+    const handleCorruptionDelete = async (id) => {
+        current_report =  id
+        console.log("Selected Report: ", current_report)
+
+        try{
+            const res = await fetch(`https://ireporter-api.onrender.com/corruption_reports/${current_report}`, {
+                method : "DELETE"
+            })
+
+            const data = await res.json()
+
+            if (res.ok){
+                alert("Report deleted successfully!")
+                window.location.reload()
+            } else {
+                alert(`Failed to delete report: ${data.error || "Unknown error"}`)
+            }
+        } catch (err) { console.error(`Error: ${err.message}`); }
+    }
+    const handlePetitionDelete = async (id) => {
+        current_report = id
+        console.log("Selected Report: ", current_report)
+
+        try{ 
+            const res = await fetch(`https://ireporter-api.onrender.com/public_petitions/${current_report}`, {
+                method: "DELETE"
+            })
+
+            const data = await res.json()
+
+            if (res.ok) {
+                alert("Report deleted successfully!")
+                window.location.reload()
+            } else {
+                alert(`Failed to detlete report: ${data.error || "Unknown error"}`)
+            }
+        }catch (err) { console.error(`Error: ${err.message}`); }    
+    }
 
     useEffect(
 		() => async function () {
@@ -277,11 +315,20 @@ export default function UserDashboard() {
                                     <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
                                 : null
                                 }
-                                <button
-                                    onClick={()=>handleCorruptionClick(report.id, report.status, index)}
-                                    className="card-button">
-                                    Edit Report
-                                </button>
+                                {report.status === "Pending"?  
+                                <div className="button-container">
+                                    <button
+                                        onClick={()=>handleCorruptionClick(report.id, report.status, index)}
+                                        className="edit-button">
+                                        Edit Report
+                                    </button>
+                                    <button 
+                                        className="delete-button"
+                                        onClick={() => handleCorruptionDelete(report.id)}>
+                                        Delete Report
+                                    </button>
+                                </div>
+                                :null}
                             </div>
                         </div>
                     ))}
@@ -378,11 +425,20 @@ export default function UserDashboard() {
                                     <p className="card-description"><b>Admin Comments:</b> {report.admin_comments}</p>
                                     : null
                                 }
-                                <button
-                                    onClick={() => handlePetitionClick(report.id, report.status, index)}
-                                    className="card-button">
-                                    Edit Report
-                                </button>
+                                {report.status === "Pending"?  
+                                <div className="button-container">
+                                    <button
+                                        onClick={() => handlePetitionClick(report.id, report.status, index)}
+                                        className="edit-button">
+                                        Edit Report
+                                    </button>
+                                    <button 
+                                        className="delete-button"
+                                        onClick={() => handlePetitionDelete(report.id)}>
+                                        Delete Report
+                                    </button>
+                                </div>
+                                :null}
                             </div>
                         </div>
                     ))}

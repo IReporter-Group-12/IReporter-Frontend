@@ -9,10 +9,7 @@ export default function AdminDashboard() {
     const [publicPetitions, setPublicPetitions] = useState([]);
 
     // Getting items in localstorage and assigning them to variables
-    const user_id = localStorage.getItem("user_id");
-    const username = localStorage.getItem("username");
-    const email = localStorage.getItem("email");
-    const current_report = localStorage.getItem("report_id");
+    let current_report = 0
     const role = localStorage.getItem("role")
 
     const [corruptionForm, setCorruptionForm] = useState({
@@ -67,12 +64,12 @@ export default function AdminDashboard() {
     };
 
     const handleCorruptionClick = (id) => {
-        localStorage.setItem("report_id", id);
+        current_report = id
         handleOpenCorruptionModal();
     };
 
     const handlePetitionClick = (id) => {
-        localStorage.setItem("report_id", id);
+        current_report = id
         handleOpenPetitionModal();
     };
 

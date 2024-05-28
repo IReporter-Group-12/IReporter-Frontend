@@ -104,7 +104,7 @@ const Navbar = () => {
 							to="/login"
 							onClick={async () => {
 
-								const res = await fetch("http://127.0.0.1:5000/logout",{
+								const res = await fetch("https://ireporter-api.onrender.com/logout",{
 									method : "POST"
 								})
 
@@ -114,7 +114,6 @@ const Navbar = () => {
 								localStorage.setItem('username', null)
 								localStorage.setItem("email", null)
 								localStorage.setItem("role", null)
-								localStorage.setItem("report_id", null)
 
 								alert("You have been logged out successfully!")
 								

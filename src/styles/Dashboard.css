@@ -81,7 +81,14 @@
   color: rgb(255, 0, 0);
 }
 
-.card-button {
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+.edit-button {
     background-color: #0066ff;
     border: none;
     border-radius: 5px;
@@ -95,6 +102,26 @@
     transition: background-color 0.2s;
 }
 
-.card-button:hover {
+.delete-button {
+    background-color: #f50f0f;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-button:hover {
     background-color: #0056b3;
 }
+
+.delete-button:hover {
+    background-color: #b30000;
+}
+
+
