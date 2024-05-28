@@ -42,7 +42,7 @@ const UserRegisterPage = () => {
     try {
 		// Send a POST request to the server with the form data
 		const res = await fetch(
-			"http://127.0.0.1:5000/user/register",
+			"https://ireporter-api.onrender.com/user/register",
 			{
 				method: "POST",
 				headers: {

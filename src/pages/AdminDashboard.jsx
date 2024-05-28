@@ -79,7 +79,7 @@ export default function AdminDashboard() {
     const handleCorruptionSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://127.0.0.1:5000/admin_corruption_reports/${current_report}`, {
+            const res = await fetch(`https://ireporter-api.onrender.com/admin_corruption_reports/${current_report}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
     const handlePetitionSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://127.0.0.1:5000/admin_public_petitions/${current_report}`, {
+            const res = await fetch(`https://ireporter-api.onrender.com/admin_public_petitions/${current_report}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         () => async function () {
             if (role === 'admin') {
                 try {
-                    const res = await fetch("http://127.0.0.1:5000/corruption_reports", {
+                    const res = await fetch("https://ireporter-api.onrender.com/corruption_reports", {
                         method: "GET"
                     });
                     const data = await res.json();
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
         () => async function () {
             if(role === 'admin') {
                 try {
-                    const res = await fetch("http://127.0.0.1:5000/public_petitions", {
+                    const res = await fetch("https://ireporter-api.onrender.com/public_petitions", {
                         method: "GET"
                     });
                     const data = await res.json();

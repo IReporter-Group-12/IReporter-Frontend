@@ -140,7 +140,7 @@ export default function UserDashboard() {
         console.log("Final Corruption Form", corruptionForm)
         
         try {
-            const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${current_report}`, {
+            const res = await fetch(`https://ireporter-api.onrender.com/corruption_reports/${current_report}`, {
                 method : "PATCH",
                 headers : {
                     "Content-Type" : "application/json"
@@ -174,7 +174,7 @@ export default function UserDashboard() {
         console.log("Final Petition Form", petitionForm)
         
         try {
-            const res = await fetch(`http://127.0.0.1:5000/public_petitions/${current_report}`, {
+            const res = await fetch(`https://ireporter-api.onrender.com/public_petitions/${current_report}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
@@ -207,7 +207,7 @@ export default function UserDashboard() {
 		() => async function () {
             if(loggedIn === "true"){
 				try {
-					const res = await fetch(`http://127.0.0.1:5000/corruption_reports/${user_id}/`,
+					const res = await fetch(`https://ireporter-api.onrender.com/corruption_reports/${user_id}/`,
 						{method: "GET"}
 					);
 					const data = await res.json();
@@ -222,7 +222,7 @@ export default function UserDashboard() {
         () => async function () {
             if(loggedIn === "true"){
                 try {
-                    const res = await fetch(`http://127.0.0.1:5000/public_petitions/${user_id}/`,
+                    const res = await fetch(`https://ireporter-api.onrender.com/public_petitions/${user_id}/`,
                         {method: "GET"}
                     );
                     const data = await res.json();

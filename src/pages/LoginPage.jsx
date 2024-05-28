@@ -38,7 +38,7 @@ const LoginPage = () => {
 
 		try {
 			// Sending a POST request to the login endpoint with email and password
-			const res = await fetch("http://127.0.0.1:5000/login", {
+			const res = await fetch("https://ireporter-api.onrender.com/login", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json", // Setting content type to JSON

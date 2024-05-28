@@ -82,7 +82,7 @@ const CorruptionForm = () => {
         const mediaForm = new FormData();
         mediaForm.append("file", media);
 
-        const uploadResponse = await fetch("http://localhost:5000/upload_report", {
+        const uploadResponse = await fetch("https://ireporter-api.onrender.com/upload_report", {
           method: "POST",
           body: mediaForm,
         });
@@ -99,7 +99,7 @@ const CorruptionForm = () => {
       data.media = mediaUrls;
 
       // Send a POST request to create a new report
-      const response = await fetch("http://localhost:5000/corruption_reports", {
+      const response = await fetch("https://ireporter-api.onrender.com/corruption_reports", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

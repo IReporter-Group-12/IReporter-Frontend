@@ -83,7 +83,7 @@ const PublicPetitionForm = () => {
         const mediaForm = new FormData();
         mediaForm.append("file", media);
 
-        const uploadResponse = await fetch("http://127.0.0.1:5000/upload_petition", {
+        const uploadResponse = await fetch("https://ireporter-api.onrender.com/upload_petition", {
           method: "POST",
           body: mediaForm,
         });
@@ -102,7 +102,7 @@ const PublicPetitionForm = () => {
       console.log("Final data to be sent:", data); // Log final data to be sent
 
       // Send a POST request to create a new report
-      const response = await fetch("http://127.0.0.1:5000/public_petitions", {
+      const response = await fetch("https://ireporter-api.onrender.com/public_petitions", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
