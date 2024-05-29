@@ -295,7 +295,7 @@ export default function UserDashboard() {
                         <div className="card" key={index}>
                             <img
                                 src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
-                                alt="Corruption Image"
+                                alt="Placeholder for evidence"
                                 className="card-image"
                             />
                             <div className="card-content">
@@ -405,7 +405,7 @@ export default function UserDashboard() {
                         <div className="card" key={index}>
                             <img
                                 src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp"
-                                alt="Corruption Image"
+                                alt="Placeholder for evidence"
                                 className="card-image"
                             />
                             <div className="card-content">

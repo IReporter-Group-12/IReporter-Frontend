@@ -16,7 +16,7 @@ const AdminRegisterPage = () => {
 
 	// Handle input changes
 	const handleChange = (e) => {
-		const { name, value, files } = e.target; // Get name, value, and files from the event target
+		const { name, value } = e.target; // Get name, value, and files from the event target
 		setFormData({
 			...formData,
 			[name]: value, // If the input is for profileImage, set it as the file, otherwise set the value

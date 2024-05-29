@@ -2,16 +2,14 @@
 import { IconButton } from "@mui/material";
 import { Search, Person, Menu } from "@mui/icons-material";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 // import { setLogin } from "../redux/state";
 
 // Importing CSS styles and variables for the Navbar component
 import "../styles/Navbar.css";
 import variables from "../styles/variables.css";
-import { setLogout } from "../redux/state";
 
-// Ensure the correct path for importing variables
 // import variables from '/home/nasirisi/Desktop/phase 5/ireporter/src/styles/Variable.js';
 
 const Navbar = () => {
@@ -20,10 +18,6 @@ const Navbar = () => {
   
   // Accessing user data from the Redux store
   const user = useSelector((state) => state.user);
-
-
-  // Dispatch function to send actions to the Redux store
-  const dispatch = useDispatch();
   
   // State to manage the search input value
   const [search, setSearch] = useState("");
