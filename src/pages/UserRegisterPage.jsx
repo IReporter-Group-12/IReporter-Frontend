@@ -1,7 +1,6 @@
 // Import necessary hooks and styles
 import { useEffect, useState } from "react"; // useEffect and useState hooks from React
 import { useNavigate } from "react-router-dom"; // useNavigate from react-router-dom for navigation
-import "../styles/List.css"; // CSS for styling
 import "../styles/Register.css"; // CSS for styling
 
 // RegisterPage component
