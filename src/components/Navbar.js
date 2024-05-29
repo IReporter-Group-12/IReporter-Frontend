@@ -114,6 +114,8 @@ const Navbar = () => {
 								localStorage.setItem('username', null)
 								localStorage.setItem("email", null)
 								localStorage.setItem("role", null)
+								localStorage.setItem("report_id", null)
+
 
 								alert("You have been logged out successfully!")
 								

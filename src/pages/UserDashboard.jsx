@@ -11,7 +11,7 @@ export default function UserDashboard() {
     const user_id = localStorage.getItem("user_id")
     const username = localStorage.getItem("username")
     const email = localStorage.getItem("email")
-    let current_report = null
+    const current_report = localStorage.getItem("report_id")
 
     const [corruptionReports, setCorruptionReports] = useState([])
     const [publicPetitions, setPublicPetitions] = useState([])
@@ -74,7 +74,7 @@ export default function UserDashboard() {
         if (status !== "Pending") {
             alert("Sorry, you cannot edit your report after it has been reviewed.")
         } else {
-            current_report = id
+            localStorage.setItem("report_id", id)
             const report = corruptionReports[index];
             setCorruptionForm({
                 title: report.title,
@@ -92,7 +92,7 @@ export default function UserDashboard() {
 		if (status !== "Pending") {
 			alert("Sorry, you cannot edit your report after it has been reviewed.");
 		} else {
-            current_report = id
+        localStorage.setItem("report_id", id)
             const petition = publicPetitions[index];
             setPetitionForm({
                 title: petition.title,
@@ -137,6 +137,7 @@ export default function UserDashboard() {
     const handleCorruptionSubmit = async (e) => {
 
         e.preventDefault();
+
         console.log("Final Corruption Form", corruptionForm)
         
         try {
@@ -171,6 +172,7 @@ export default function UserDashboard() {
     const handlePetitionSubmit = async (e) => {
 
         e.preventDefault();
+
         console.log("Final Petition Form", petitionForm)
         
         try {
@@ -203,7 +205,10 @@ export default function UserDashboard() {
     }
 
     const handleCorruptionDelete = async (id) => {
-        current_report =  id
+        (function () {
+            localStorage.setItem("report_id", id)
+        })()
+
         console.log("Selected Report: ", current_report)
 
         try{
@@ -222,7 +227,9 @@ export default function UserDashboard() {
         } catch (err) { console.error(`Error: ${err.message}`); }
     }
     const handlePetitionDelete = async (id) => {
-        current_report = id
+        (function () {
+            localStorage.setItem("report_id", id)
+        })()
         console.log("Selected Report: ", current_report)
 
         try{ 

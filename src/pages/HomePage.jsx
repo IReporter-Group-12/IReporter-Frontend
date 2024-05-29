@@ -8,6 +8,8 @@ const HomePage = () => {
     localStorage.setItem('username', null)
     localStorage.setItem("email", null)
     localStorage.setItem("role", null)
+    localStorage.setItem("report_id", null)
+
   }
 
   return (
