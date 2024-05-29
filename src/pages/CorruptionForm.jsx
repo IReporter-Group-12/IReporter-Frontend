@@ -1,7 +1,6 @@
 // Importing necessary components, hooks, and libraries
 import { useState } from "react";
 import { BiTrash } from "react-icons/bi";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/CorruptionForm.css";
 import "../styles/breakpoints.css";
@@ -9,7 +8,7 @@ import "../styles/breakpoints.css";
 const CorruptionForm = () => {
 
   // State to store user location
-  const [userLocation, setUserLocation] = useState(null);
+  // const [userLocation, setUserLocation] = useState(null);
   // State to store user-provided data
 
   // State to store location details of the incident
@@ -122,21 +121,21 @@ const CorruptionForm = () => {
   };
 
   // Function to get user's current location
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ latitude, longitude });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
+  // const getLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         setUserLocation({ latitude, longitude });
+  //       },
+  //       (error) => {
+  //         console.error("Error getting location:", error);
+  //       }
+  //     );
+  //   } else {
+  //     console.error("Geolocation is not supported by this browser.");
+  //   }
+  // };
 
   return (
     <>

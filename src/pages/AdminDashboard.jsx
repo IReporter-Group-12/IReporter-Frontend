@@ -165,7 +165,7 @@ export default function AdminDashboard() {
                 <div className="card-container">
                     {corruptionReports.map((report, index) => (
                         <div className="card" key={index}>
-                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Placeholder for evidence" className="card-image" />
                             <div className="card-content">
                                 <small className={`${report.status === 'Pending' ? 'status-pending' :
                                         report.status === 'Resolved' ? 'status-resolved' :
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
                 <div className="card-container">
                     {publicPetitions.map((report, index) => (
                         <div className="card" key={index}>
-                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Corruption Image" className="card-image" />
+                            <img src="https://www.mediastorehouse.com.au/p/251/nairobi-city-skyline-kenyas-parliament-1643509.jpg.webp" alt="Placeholder for evidence" className="card-image" />
                             <div className="card-content">
                                 <small className={`${report.status === 'Pending' ? 'status-pending' :
                                         report.status === 'Resolved' ? 'status-resolved' :

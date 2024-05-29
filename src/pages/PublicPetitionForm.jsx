@@ -1,6 +1,5 @@
 import { useState } from "react"; // useState hook from React
 import { BiTrash } from "react-icons/bi"; // Trash icon from react-icons
-import { useSelector } from "react-redux"; // useSelector hook from Redux
 import { useNavigate } from "react-router-dom"; // useNavigate from react-router-dom for navigation
 import "../styles/PublicPetition.css"; // CSS for styling the form
 import "../styles/breakpoints.css"; // CSS for responsive design
@@ -10,7 +9,7 @@ import "../styles/breakpoints.css"; // CSS for responsive design
 const PublicPetitionForm = () => {
 
   // State to store user's location
-  const [userLocation, setUserLocation] = useState(null);
+  // const [userLocation, setUserLocation] = useState(null);
 
   // State to store incident location data
   const [incidentLocation, setIncidentLocation] = useState({
@@ -125,21 +124,21 @@ const PublicPetitionForm = () => {
   };
 
   // Function to get the user's current location
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ latitude, longitude });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
+  // const getLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         setUserLocation({ latitude, longitude });
+  //       },
+  //       (error) => {
+  //         console.error("Error getting location:", error);
+  //       }
+  //     );
+  //   } else {
+  //     console.error("Geolocation is not supported by this browser.");
+  //   }
+  // };
 
   // Render the form
   return (

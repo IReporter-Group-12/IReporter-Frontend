@@ -1,7 +1,6 @@
 // Importing necessary libraries and styles
 import React, { useState } from "react";
 import "../styles/Login.css"; // Importing CSS for styling
-import { setLogin } from "../redux/state"; // Importing setLogin action from redux state
 import { useDispatch } from "react-redux"; // Importing useDispatch hook from redux
 import { useNavigate } from "react-router-dom"; // Importing useNavigate from react-router-dom for navigation
 
@@ -11,9 +10,6 @@ const LoginPage = () => {
 		'email': '',
 		'password': ''
 	})
-
-	// Dispatch function to dispatch actions to the Redux store
-	const dispatch = useDispatch();
 
 	// Navigate function for programmatic navigation
 	const navigate = useNavigate();
