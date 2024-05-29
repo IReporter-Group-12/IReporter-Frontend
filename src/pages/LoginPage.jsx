@@ -1,7 +1,6 @@
 // Importing necessary libraries and styles
 import React, { useState } from "react";
 import "../styles/Login.css"; // Importing CSS for styling
-import { useDispatch } from "react-redux"; // Importing useDispatch hook from redux
 import { useNavigate } from "react-router-dom"; // Importing useNavigate from react-router-dom for navigation
 
 const LoginPage = () => {
